@@ -2,3 +2,5 @@ data/
 *.npy
 *.tar.gz
 *.json
+*.out
+*.sh
