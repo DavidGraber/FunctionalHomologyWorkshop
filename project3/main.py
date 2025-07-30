@@ -19,7 +19,7 @@ The script is run with the following command:
 python main.py --TM_threshold 0.8 --Tanimoto_threshold 0.8 --rmsd_threshold 2.0 --sequence_similarity_threshold 0.8
 
 The thresholds can be changed to create different adjacency and distance matrices.
-The script saves the adjacency and distance matrices to npy files, along with the test_mask array.
+The script saves the adjacency and distance matrices to npy files.
 """
 
 
@@ -107,78 +107,13 @@ def plot_predictions(y_true, y_pred, title, label):
     plt.show()
 
 
-def compute_lookup_predictions(distance_matrix, complexes, affinity_data, test_or_not, top_n):
-
-    """
-    Compute the predictions for the test dataset using the lookup method.
-    The predictions are based on the average label of the top n most similar training complexes.
-    The similarity is computed using the pairwise similarity matrices (PSM) for Tanimoto and TM-score.
-    """
-
-    # Loop over the test complexes and look for the most similar training complexes
-    # ---------------------------------------------------------------------------------
-    print(f"\n\nComputing predictions for CASF2016 test set with training data lookup")
-
-    
-    test_complex_indices = np.where(test_or_not)[0]
-    test_complexes = [complexes[i] for i in test_complex_indices]
-    true_labels = [affinity_data[complex]['log_kd_ki'] for complex in test_complexes]
-
-    predicted_labels = {}
-    for complex_idx, complex in zip(test_complex_indices, test_complexes):
-
-        print(f"\nFinding similar training complexes for {complex}")
-
-        distances = distance_matrix[complex_idx, :]
-        distances[complex_idx] = -np.inf # Set the metrics of the complex itself to small number
-        distances[test_or_not == 1] = -np.inf # Set the metrics of all complexes in the test dataset to small number
-
-        sorted_indices = np.argsort(distances)
-        sorted_indices = list(reversed(sorted_indices))
-
-        # Get the top n similar and average their labels
-        top_indices = sorted_indices[:top_n]
-        names = [complexes[idx] for idx in top_indices]
-        affinities = np.array([affinity_data[complex]['log_kd_ki'] for complex in names])
-        weights = distances[top_indices]
-        weighted_average = np.average(affinities, weights=weights)
-        predicted_labels[complex] = weighted_average.item()
-
-        print(f"Most similar complexes: {names}")
-        print(f"Distances: {distances[top_indices]}")
-        print(f"Predicted affinity: {weighted_average}")
-
-
-    # Compute the evaluation metrics
-    predicted_labels = np.array([predicted_labels[complex] for complex in test_complexes])
-    corr_matrix = np.corrcoef(true_labels, predicted_labels)
-    r = corr_matrix[0, 1]
-    rmse = np.sqrt(np.mean((np.array(true_labels) - np.array(predicted_labels))**2))
-
-    plot_predictions(true_labels, 
-                     predicted_labels, 
-                     f"CASF2016 predictions\nWeighted average of labels of top {top_n} similar training complexes\nR = {r:.3f}, RMSE = {rmse:.3f}",
-                     f"CASF2016 Predictions")
-    
-    plt.savefig(f'CASF2016_predictions_top{top_n}_compl', dpi=300)
-
-
 
 def main():
     args = parse_args()
-    TM_threshold = args.TM_threshold
-    Tanimoto_threshold = args.Tanimoto_threshold
-    rmsd_threshold = args.rmsd_threshold
-    sequence_similarity_threshold = args.sequence_similarity_threshold
-
 
     # List of complexes in the pairwise similarity matrix
     with open(args.complexes, 'r') as f:
         complexes = json.load(f)
-
-    # Import affinity dict and get true affinity for each complex
-    with open(args.affinity_data, 'r') as f:
-        affinity_data = json.load(f)
 
     # TM-SCORE SIMILARITY MATRIX
     if os.path.exists(args.psm_tm):
@@ -198,7 +133,6 @@ def main():
     else:
         raise FileNotFoundError(f"RMSD similarity matrix file not found: {args.psm_rmsd}")
 
-
     # SEQUENCE SIMILARITY MATRIX
     # if os.path.exists(args.psm_sequence):
     #     similarity_matrix_sequence = np.load(args.psm_sequence)
@@ -210,30 +144,23 @@ def main():
     adjacency_matrix = create_adjacency_matrix(similarity_matrix_tm, 
                                                similarity_matrix_tanimoto, 
                                                similarity_matrix_rmsd, 
-                                            #    similarity_matrix_sequence, 
-                                               TM_threshold, 
-                                               Tanimoto_threshold, 
-                                               rmsd_threshold, 
-                                               sequence_similarity_threshold)
+                                            #  similarity_matrix_sequence, 
+                                               args.TM_threshold, 
+                                               args.Tanimoto_threshold, 
+                                               args.rmsd_threshold, 
+                                               args.sequence_similarity_threshold)
 
     distance_matrix = create_distance_matrix(similarity_matrix_tm, 
                                                similarity_matrix_tanimoto, 
                                                similarity_matrix_rmsd, 
-                                            #    similarity_matrix_sequence
+                                            #  similarity_matrix_sequence
                                                )
 
     # Save the matrices to npy files
     np.save('adjacency_matrix.npy', adjacency_matrix)
+    print(f"Saved adjacency matrix to adjacency_matrix.npy")
     np.save('distance_matrix.npy', distance_matrix)
-
-
-    # Compute the predictions for the test dataset using the lookup method
-    with open(args.data_split, 'r') as f:
-        data_split = json.load(f)
-    test_or_not = np.array([True if complex in data_split['casf2016'] else False for complex in complexes])
-    np.save('test_mask.npy', test_or_not)
-
-    compute_lookup_predictions(distance_matrix, complexes, affinity_data, test_or_not, 5)
+    print(f"Saved distance matrix to distance_matrix.npy")
 
 
 if __name__ == "__main__":
