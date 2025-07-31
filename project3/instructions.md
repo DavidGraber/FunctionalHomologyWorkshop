@@ -133,7 +133,7 @@ Now we use the **adjacency matrix** from Step 1 to create a network graph visual
 
 Executing the command below will generate a network graph visualization:
 ```bash
-python create_graph.py --adjacency_matrix project3/adjacency_matrix.npy --mask project3/test_train_mask.npy --labels project3/affinities.npy --ids project3/pairwise_similarity_complexes.json --output_path similarity_graph.png
+python create_graph.py --clustering project3/adjacency_matrix.npy --mask project3/test_train_mask.npy --labels project3/affinities.npy --ids project3/pairwise_similarity_complexes.json --output_path similarity_graph.png
 ```
 
 ### Parameter Explanation
