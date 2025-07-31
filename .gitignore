@@ -1,6 +1,6 @@
 data/
 *.npy
 *.tar.gz
-*.json
+project3/*.json
 *.out
 *.sh
