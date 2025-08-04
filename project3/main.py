@@ -91,22 +91,6 @@ def create_distance_matrix(similarity_matrix_tm,
     return distance_matrix
 
 
-def plot_predictions(y_true, y_pred, title, label):
-    plt.figure(figsize=(8, 8))
-    plt.scatter(y_true, y_pred, alpha=0.5, c='blue', label=label)
-    axislim = 16
-    plt.plot([0, axislim], [0, axislim], color='red', linestyle='--')
-    plt.xlabel('True pK Values', fontsize=12)
-    plt.ylabel('Predicted pK Values', fontsize=12)
-    plt.ylim(0, axislim)
-    plt.xlim(0, axislim)
-    plt.axhline(0, color='grey', linestyle='--')
-    plt.axvline(0, color='grey', linestyle='--')
-    plt.title(title, fontsize=14)
-    plt.legend(fontsize=12)
-    plt.show()
-
-
 
 def main():
     args = parse_args()
