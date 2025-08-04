@@ -84,7 +84,7 @@ def create_nx_graph(adjacency_matrix, ids=None, mask=None, labels=None, output_p
     if mask is not None:
         mask = np.atleast_1d(mask)
         edgecolors = ['red' if i else 'white' for i in mask]
-        node_sizes = [300   if i else 200     for i in mask]
+        node_sizes = [400   if i else 300     for i in mask]
         included_indices = np.where(mask)[0]
         print(f"Processing {len(included_indices)} nodes with mask=1 {[ids[x] for x in included_indices[0:5]]}...", flush=True)
 
@@ -139,7 +139,11 @@ def create_nx_graph(adjacency_matrix, ids=None, mask=None, labels=None, output_p
     # Draw the graph and save it
     # ------------------------------------------------------------------------------------------------
     print("Computing graph layout...")
-    pos = nx.spring_layout(G)
+    pos = nx.spring_layout(G, k=0.05)
+    # pos = nx.kamada_kawai_layout(G)
+    # pos = nx.circular_layout(G)
+    # pos = nx.shell_layout(G)
+    
     plt.figure(figsize=(50, 50))
     plt.gca().set_facecolor('white')
     plt.axis('off')
@@ -173,9 +177,52 @@ def create_nx_graph(adjacency_matrix, ids=None, mask=None, labels=None, output_p
     print(f"Saving graph to {output_path}...")
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print("Graph creation completed!")
+
+    # Print metrics about the clustering
+    print_metrics(adjacency_matrix, mask)
     # ------------------------------------------------------------------------------------------------
 
 
+def print_metrics(adjacency_matrix, mask=None):
+
+    print("\n" + "="*60)
+    print("CLUSTERING METRICS")
+    print("="*60)
+    
+    # Basic connectivity metrics (always available)
+    n_nodes = adjacency_matrix.shape[0]
+    degrees = np.sum(adjacency_matrix, axis=1)
+    n_edges = np.sum(adjacency_matrix) // 2  # Divide by 2 for undirected graph
+    
+    print(f"📊 BASIC CONNECTIVITY METRICS:")
+    print(f"   • Total nodes: {n_nodes}")
+    print(f"   • Total edges: {n_edges}")
+    
+    if mask is not None:
+        print(f"\n MASKED CLUSTERS METRICS:")
+        n_masked = np.sum(mask)
+        print(f"   • Masked nodes (test set complexes): {n_masked} ({n_masked/n_nodes*100:.1f}% of total)")
+        print(f"   • External nodes (train set complexes): {np.sum(~mask)} ({np.sum(~mask)/n_nodes*100:.1f}% of total)")
+        
+        # # Connections to external nodes
+        external_edges = adjacency_matrix[mask][:, ~mask]
+        print(f"   • Connections between masked and external nodes: {np.sum(external_edges)}")
+        print(f"   • Percentage of masked nodes with connections to external nodes: {((external_edges == 1).any(axis=1).sum() / n_masked) * 100:.1f}%")
+        
+        # Masked node degree statistics
+        masked_degrees = degrees[mask]
+        print(f"\n Degree (number of connections) of masked nodes (test set nodes):")
+        print(f"   • Avg degree: {np.mean(masked_degrees):.2f}")
+        print(f"   • Min degree: {np.min(masked_degrees)}")
+        print(f"   • Max degree: {np.max(masked_degrees)}")
+
+        # External node degree statistics
+        external_degrees = degrees[~mask]
+        print(f"\n Degree (number of connections) of external nodes (train nodes):")
+        print(f"   • Avg degree: {np.mean(external_degrees):.2f}")
+        print(f"   • Min degree: {np.min(external_degrees)}")
+        print(f"   • Max degree: {np.max(external_degrees)}")
+    print("="*60 + "\n")
 
 
 def main():
