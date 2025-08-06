@@ -64,6 +64,7 @@ tar -xzvf project3_data.tar.gz
 ### Required Libraries
 The project requires the following Python libraries:
 
+- **scipy**: For statistical analysis
 - **numpy**: For numerical computations and array operations
 - **matplotlib**: For creating plots and visualizations
 - **networkx**: For creating and analyzing network graphs
@@ -74,7 +75,7 @@ The project requires the following Python libraries:
 You can install the required packages using pip:
 
 ```bash
-pip install numpy matplotlib networkx pandas
+pip install scipy numpy matplotlib networkx pandas
 ```
 
 ### Conda Environment
@@ -83,7 +84,7 @@ If you're using conda, you can create a dedicated environment:
 ```bash
 conda create -n project3 python=3.8
 conda activate project3
-conda install numpy matplotlib networkx pandas
+conda install scipy numpy matplotlib networkx pandas
 ```
 
 ### System Requirements
@@ -133,7 +134,7 @@ Now we use the **adjacency matrix** from Step 1 to create a network graph visual
 
 Executing the command below will generate a network graph visualization:
 ```bash
-python create_graph.py --clustering project3/adjacency_matrix.npy --mask project3/test_train_mask.npy --labels project3/affinities.npy --ids project3/pairwise_similarity_complexes.json --output_path similarity_graph.png
+python ../create_graph.py --clustering adjacency_matrix.npy --mask test_train_mask.npy --labels affinities.npy --ids pairwise_similarity_complexes.json --output_path similarity_graph.png
 ```
 
 ### Parameter Explanation
