@@ -2,33 +2,28 @@
 
 ## Overview
 
-This project focuses on similarity detection within the ProtStab 2.0 train and test dataset (https://doi.org/10.3390/ijms231810798). You will perform the following steps:
-- **Clustering:** You will cluster the protein sequences using different combinations of sequence identity and sequence coverage thresholds.
-- **Visualization:** For each clustering, we can visualize the connectivity of test sequences with training complexes, giving insights into train-test data leakage present in this database. 
--
-- **Training of XGBoost regressors:** You will train a simple XGBoost regressor and evaluate its performance based on the unfiltered test dataset and the filtered dataset (based on afore determined sequence identity and sequence coverage thresholds). How do the performance metrics change?
+This project focuses on similarity detection within the ProtStab train and test dataset ([https://doi.org/10.3390/ijms231810798](https://link.springer.com/article/10.1186/s12864-019-6138-7)). You will perform the following steps:
+- **Clustering:** You will cluster the protein sequences using different sequence identity and sequence coverage thresholds.
+- **Visualization:** For each clustering, you can visualize the connectivity of test sequences with training complexes, giving insights into train-test data leakage present in this database. Which test datapoints would you remove? 
+- **Dataset curation:** After identifying train-test dataleakage, you will also curate the train dataset to ensure more realistic cross-validation results.
+- **Training of XGBoost regressors:** You will train a simple XGBoost regressor with 5-fold cross-validation and evaluate its performance based on the unfiltered test dataset and the filtered train dataset. How do the performance metrics change?
 
 ## Key Concepts
 
-### PDBbind Database
-In the context of ProtStab 2.0 algorithm utilized a dataset of protein thermal stability measurements, specifically focused on protein melting temperatures (Tₘ). It contains experimentally determined Tₘ values for a wide range of wild-type proteins under various experimental conditions. This dataset is widely used for training and evaluating computational models that predict protein thermal stability and its determinants. 
-
-### Binding Affinity
-- **Binding affinity** measures how strongly a ligand binds to a protein
-- Expressed as log Kd/Ki values (lower values indicate stronger binding)
-- Critical for drug discovery and understanding protein-ligand interactions
+### ProtStab
+The ProtStab algorithm utilized a dataset of protein thermal stability measurements (https://www.science.org/doi/10.1126/science.aai7825), specifically focused on protein melting temperatures (Tₘ). It contains experimentally determined Tₘ values for a wide range of wild-type proteins under various experimental conditions. This dataset is widely used for training and evaluating computational models that predict protein thermal stability and its determinants. 
 
 ### Similarity Metrics
 The project uses two different similarity metrics to cluster similar protein sequences:
 
-1. **Pairwise sequence identity**: Measures sequence similarity between protein sequences (0-100, higher is more similar)
+1. **Sequence identity**: Measures sequence similarity between protein sequences (0-100, higher is more similar)
 2. **Sequence coverage**: Measures how much of the two sequences can be aligned (0-1, higher is more similar)
 
 ### Prediction Method
 The approach uses a **XGBoost** regressor:
-- The Regressor is trained on the full ProtStab2 training dataset (without hyperparameter tuning) 
-- Performance is evaluated using both unfiltered and filtered test dataset
-- Different filtering thresholds and their impact on model performance evaluation are compared
+- The Regressor is first trained on the full ProtStab training dataset (without hyperparameter tuning) 
+- The Regressor is then trained on a filtered ProtStab training dataset (without hyperparameter tuning) 
+- The resulting cross-validation performances of both datasets are compared
 
 ## Data Requirements
 
@@ -135,3 +130,4 @@ python main.py --sequence_identity_threshold 0.9 --sequence_coverage_threshold 0
 ```
 
 ### Output Files
+
