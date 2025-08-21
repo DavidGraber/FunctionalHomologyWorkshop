@@ -107,10 +107,10 @@ With this information, we can investigate train and test set for data leakage, f
  python analyze_dataleakage.py result_60_60/output_cluster.tsv protstab_dataset.csv result_60_60
 ```
 ### Customizing parameters
-Please try a higher threshold and compare the networks and clustering metrics, e.g.:
+Please also try a higher threshold and compare the networks and clustering metrics, e.g.:
 
 ```bash
-mkdir -p result_80_80 && mmseqs easy-linclust protstab_sequences.fasta result_80_80/output test --min-seq-id 0.8 -c 0.8 --cov-mode 0
+gmkdir -p result_80_80 && mmseqs easy-linclust protstab_sequences.fasta result_80_80/output test --min-seq-id 0.8 -c 0.8 --cov-mode 0
 ```
 ```bash
  python analyze_dataleakage.py result_80_80/output_cluster.tsv protstab_dataset.csv result_80_80
@@ -125,5 +125,6 @@ python main.py --sequence_identity_threshold 0.9 --sequence_coverage_threshold 0
 ```
 
 ### Output Files
+
 
 
