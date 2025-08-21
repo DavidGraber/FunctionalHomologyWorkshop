@@ -92,35 +92,30 @@ Executing the command below will use mmseqs2's functionality easy-linlust to clu
 
 This example utilizes the parameters:
 
-- **Sequence identity threshold:** --min-seq-id 0.8 (80% sequence identity threshold per cluster)
+- **Sequence identity threshold:** --min-seq-id 0.6 (60% sequence identity threshold per cluster)
 
-Please do not change --cov-mode 0 (80% sequence coverage threshold per cluster - at least 80% of the sequence length should be shared)
+Please do not change --cov-mode 0 (60% sequence coverage threshold per cluster - at least 60% of the sequence length should be shared)
 
 ```bash
-mkdir -p result_80_80 && mmseqs easy-linclust protstab2.fasta result_80_80/output result_80_80 --min-seq-id 0.8 -c 0.8 --cov-mode 0
+mkdir -p result_60_60 && mmseqs easy-linclust protstab2.fasta result_60_60/output result_60_60 --min-seq-id 0.6 -c 0.6 --cov-mode 0
 ```
 
 The resulting tsv file clusteres the input sequences into sequence identity clusters. This cluster information can be added to the ProtStab2 dataset.
 With this information, we can investigate train and test set for data leakage, for example by visualizing as network. Please run the following command:
 
 ```bash
-python analyze_dataleakage.py result_80_80/output_cluster.tsv protstab2_dataset.csv result_80_80
+ python analyze_dataleakage.py result_60_60/output_cluster.tsv protstab_dataset.csv result_60_60
 ```
 ### Customizing parameters
-Please play with different threshold and compare the networks and clustering metrics, e.g.:
+Please try a higher threshold and compare the networks and clustering metrics, e.g.:
 
 ```bash
-mkdir -p result_90_80 && mmseqs easy-linclust protstab2.fasta result_90_80/output test --min-seq-id 0.9 -c 0.8 --cov-mode 0
+mkdir -p result_80_80 && mmseqs easy-linclust protstab_sequences.fasta result_80_80/output test --min-seq-id 0.8 -c 0.8 --cov-mode 0
 ```
 ```bash
-mkdir -p result_90_90 && mmseqs easy-linclust protstab2.fasta result_90_90/output test --min-seq-id 0.9 -c 0.9 --cov-mode 0
+ python analyze_dataleakage.py result_80_80/output_cluster.tsv protstab_dataset.csv result_80_80
 ```
-```bash
-mkdir -p result_100_90 && mmseqs easy-linclust protstab2.fasta result_100_90/output test --min-seq-id 1.0 -c 0.9 --cov-mode 0
-```
-```bash
-mkdir -p result_100_100 && mmseqs easy-linclust protstab2.fasta result_100_100/output test --min-seq-id 1.0 -c 1.0 --cov-mode 0
-```
+
 
 ### Customizing parameters
 You can adjust the similarity thresholds to control how similar complexes need to be to be clustered together:
@@ -130,4 +125,5 @@ python main.py --sequence_identity_threshold 0.9 --sequence_coverage_threshold 0
 ```
 
 ### Output Files
+
 
