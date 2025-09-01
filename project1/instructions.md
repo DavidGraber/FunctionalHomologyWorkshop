@@ -25,18 +25,6 @@ The approach uses a **XGBoost** regressor:
 - The Regressor is then trained on a filtered ProtStab training dataset (without hyperparameter tuning) 
 - The resulting cross-validation performances of both datasets are compared
 
-## Data Requirements
-
-The project requires several data files containing pre-computed similarity matrices and datasets:
-
-- `identity_matrix.npz`: Sequence identity matrix (all vs. all)
-# ADAPT THIS PART HERE
-- `pairwise_similarity_matrix_tanimoto.npy`: Tanimoto similarity matrix  
-- `pairwise_similarity_matrix_rmsd.npy`: RMSD similarity matrix
-- `pairwise_similarity_complexes.json`: List of complex identifiers
-- `PDBbind_data_dict.json`: Binding affinity data for each complex
-- `PDBbind_data_split.json`: Train/test split information
-
 ## Getting Started
 
 ### 1. Navigate to Project Directory
@@ -72,7 +60,6 @@ The project requires the following Python libraries:
 
 ### Installation via Conda:
 You can install the required packages using conda:
-```
 
 ```bash
 conda create -n project1 python=3.8
@@ -109,4 +96,5 @@ With this information, we can investigate train and test set for data leakage, f
 ```
 ### How to define data leakage?
 Please think about the following: Which datapoints could be dentrimental and which beneficial for model performance? (hint: compare the Tm values within the clusters). Which would you remove from train/test set?
+
 
