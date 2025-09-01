@@ -97,7 +97,7 @@ This example utilizes the parameters:
 Please do not change --cov-mode 0 (60% sequence coverage threshold per cluster - at least 60% of the sequence length should be shared)
 
 ```bash
-mkdir -p result_60_60 && mmseqs easy-linclust protstab2.fasta result_60_60/output result_60_60 --min-seq-id 0.6 -c 0.6 --cov-mode 0
+mkdir -p result_60_60 && mmseqs easy-linclust protstab_sequences.fasta result_60_60/output result_60_60 --min-seq-id 0.6 -c 0.6 --cov-mode 0
 ```
 
 The resulting tsv file clusteres the input sequences into sequence identity clusters. This cluster information can be added to the ProtStab2 dataset.
@@ -125,6 +125,7 @@ python main.py --sequence_identity_threshold 0.9 --sequence_coverage_threshold 0
 ```
 
 ### Output Files
+
 
 
 
