@@ -56,8 +56,8 @@ tar -xzvf project1_data.tar.gz
 ```
 
 This should provide you with the following files:
-protstab2_dataset.csv (training and test data used in ProtStab2 paper)
-protstab2.fasta (protein sequence file for clustering)
+protstab_dataset.csv (training and test data used in ProtStab paper)
+protstab_sequences.fasta (protein sequence file for clustering)
 
 ## Environment Requirements
 
@@ -104,7 +104,7 @@ The resulting tsv file clusteres the input sequences into sequence identity clus
 With this information, we can investigate train and test set for data leakage, for example by visualizing as network. Please run the following command:
 
 ```bash
- python analyze_dataleakage.py result_60_60/output_cluster.tsv protstab_dataset.csv result_60_60
+ python analyze_dataleakage.py result_60_60/output_cluster.tsv protstab_dataset.csv identity_matrix.npz result_60_60
 ```
 ### Customizing parameters
 Please also try a higher threshold and compare the networks and clustering metrics, e.g.:
@@ -125,6 +125,7 @@ python main.py --sequence_identity_threshold 0.9 --sequence_coverage_threshold 0
 ```
 
 ### Output Files
+
 
 
 
