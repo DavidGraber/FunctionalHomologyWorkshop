@@ -27,9 +27,9 @@ The approach uses a **XGBoost** regressor:
 
 ## Data Requirements
 
-The project requires several data files containing pre-computed similarity matrices and metadata:
+The project requires several data files containing pre-computed similarity matrices and datasets:
 
-- `pairwise_similarity_matrix.npy`: Sequence identity matrix
+- `identity_matrix.npz`: Sequence identity matrix (all vs. all)
 # ADAPT THIS PART HERE
 - `pairwise_similarity_matrix_tanimoto.npy`: Tanimoto similarity matrix  
 - `pairwise_similarity_matrix_rmsd.npy`: RMSD similarity matrix
@@ -56,9 +56,9 @@ tar -xzvf project1_data.tar.gz
 ```
 
 This should provide you with the following files:
-protstab_dataset.csv (training and test data used in ProtStab paper)
-protstab_sequences.fasta (protein sequence file for clustering)
-
+- `protstab_dataset.csv`: Training and test data used in ProtStab paper
+- `protstab_sequences.fasta`: Protein sequence fasta file for clustering
+- `identity_matrix.npz`: Pre-computed sequence identity matrix (all vs. all)
 ## Environment Requirements
 
 ### Required Libraries
@@ -67,16 +67,16 @@ The project requires the following Python libraries:
 - **numpy**: For numerical computations and array operations
 - **matplotlib**: For creating plots and visualizations
 - **networkx**: For creating and analyzing network graphs
-- **pandas**: For data manipulation (used in create_graph.py)
-
+- **pandas**: For data manipulation 
+- **mmseqs2**: For fast sequence identity calculation & clustering
 
 ### Installation via Conda:
 You can install the required packages using conda:
 ```
 
 ```bash
-conda create -n project3 python=3.8
-conda activate project3
+conda create -n project1 python=3.8
+conda activate project1
 conda install numpy matplotlib networkx pandas
 conda install -c conda-forge -c bioconda mmseqs2
 ```
@@ -88,7 +88,7 @@ conda install -c conda-forge -c bioconda mmseqs2
 
 ## Step 1: Clustering
 
-Executing the command below will use mmseqs2's functionality easy-linlust to cluster the.
+Executing the command below will use mmseqs2's functionality easy-linlust to cluster the sequences based on there sequence identity.
 
 This example utilizes the parameters:
 
@@ -96,38 +96,17 @@ This example utilizes the parameters:
 
 Please do not change --cov-mode 0 (60% sequence coverage threshold per cluster - at least 60% of the sequence length should be shared)
 
+
 ```bash
 mkdir -p result_60_60 && mmseqs easy-linclust protstab_sequences.fasta result_60_60/output result_60_60 --min-seq-id 0.6 -c 0.6 --cov-mode 0
 ```
-
-The resulting tsv file clusteres the input sequences into sequence identity clusters. This cluster information can be added to the ProtStab2 dataset.
+## Step 2: Visualization & Analysis
+The resulting tsv file clusteres the input sequences into sequence identity clusters. This cluster information can be added to the ProtStab dataset.
 With this information, we can investigate train and test set for data leakage, for example by visualizing as network. Please run the following command:
 
 ```bash
  python analyze_dataleakage.py result_60_60/output_cluster.tsv protstab_dataset.csv identity_matrix.npz result_60_60
 ```
-### Customizing parameters
-Please also try a higher threshold and compare the networks and clustering metrics, e.g.:
-
-```bash
-mkdir -p result_80_80 && mmseqs easy-linclust protstab_sequences.fasta result_80_80/output test --min-seq-id 0.8 -c 0.8 --cov-mode 0
-```
-```bash
- python analyze_dataleakage.py result_80_80/output_cluster.tsv protstab_dataset.csv result_80_80
-```
-
-
-### Customizing parameters
-You can adjust the similarity thresholds to control how similar complexes need to be to be clustered together:
-
-```bash
-python main.py --sequence_identity_threshold 0.9 --sequence_coverage_threshold 0.9
-```
-
-### Output Files
-
-
-
-
-
+### How to define data leakage?
+Please think about the following: Which datapoints could be dentrimental and which beneficial for model performance? (hint: compare the Tm values within the clusters). Which would you remove from train/test set?
 
