@@ -5,8 +5,7 @@
 This project focuses on similarity detection within the ProtStab train and test dataset ([https://doi.org/10.3390/ijms231810798](https://link.springer.com/article/10.1186/s12864-019-6138-7)). You will perform the following steps:
 - **Clustering:** You will cluster the protein sequences using different sequence identity and sequence coverage thresholds.
 - **Visualization:** For each clustering, you can visualize the connectivity of test sequences with training complexes, giving insights into train-test data leakage present in this database. Which test datapoints would you remove? 
-- **Dataset curation:** After identifying train-test dataleakage, you will also curate the train dataset to ensure more realistic cross-validation results.
-- **Training of XGBoost regressors:** You will train a simple XGBoost regressor with 5-fold cross-validation and evaluate its performance based on the unfiltered test dataset and the filtered train dataset. How do the performance metrics change?
+- **Dataset curation:** After identifying train-test dataleakage, you will curate the test dataset to ensure it's independecne, but also the train dataset to ensure more realistic cross-validation results.
 
 ## Key Concepts
 
@@ -16,7 +15,7 @@ The ProtStab algorithm utilized a dataset of protein thermal stability measureme
 ### Similarity Metrics
 The project uses two different similarity metrics to cluster similar protein sequences:
 
-1. **Sequence identity**: Measures sequence similarity between protein sequences (0-100, higher is more similar)
+1. **Sequence identity**: Measures sequence similarity between protein sequences (0-1, higher is more similar)
 2. **Sequence coverage**: Measures how much of the two sequences can be aligned (0-1, higher is more similar)
 
 ### Prediction Method
@@ -35,7 +34,7 @@ cd project1
 ### 2. Download Data
 # PROVIDE DAVID WITH NEEDED FILES AND ADAPT GLOBUS LINK
 ```bash
-wget https://g-eac64e.765b9d.09d9.data.globus.org/project1_data.tar.gz
+wget [https://g-eac64e.765b9d.09d9.data.globus.org/project1_data.tar.gz](https://g-eac64e.765b9d.09d9.data.globus.org/project1_data.tar.gz)
 ```
 
 ### 3. Extract Data
@@ -97,4 +96,16 @@ With this information, we can investigate train and test set for data leakage, f
 ### How to define data leakage?
 Please think about the following: Which datapoints could be dentrimental and which beneficial for model performance? (hint: compare the Tm values within the clusters). Which would you remove from train/test set?
 
+## Step 3: Dataset curation
+In the last step, the ProtStab dataset will be curated to remove similar datapoints from the test dataset. Additionally, similar datapoints are also from the training dataset as those could lead to an overestimation of the performance determined via cross-validation.
 
+For this purpose, we investigate all datapoints (test & train) from the same similarity cluster (e.g. those sharing 60% sequence identity). Only datapoints with less than X °C (e.g. 5 °C) temperature difference are removed as the others might contain interesting information about differences in thermostability.
+
+The dataset can be curated with the following command. Feel free to utilize different clustering and temperature thresholts.
+
+```bash
+ python filter_dataleakage.py result_60_60/output_cluster.tsv 5 identity_matrix.npz result_60_60
+```
+
+## Step 4: Prepare presentation
+Please collect your results from the terminal outputs and figures. It will be especially interesting how much of the dataset were filtered depending of different thresholds. You will present them to the other groups in the next session.
