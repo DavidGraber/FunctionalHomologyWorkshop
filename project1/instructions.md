@@ -79,8 +79,9 @@ Executing the command below will use mmseqs2's functionality easy-linlust to clu
 This example utilizes the parameters:
 
 - **Sequence identity threshold:** --min-seq-id 0.6 (60% sequence identity threshold per cluster)
+- **Sequence coverage threshold:** -c 0.6 (60% sequence coverage threshold per cluster - at least 60% of the sequence length should be shared)
 
-Please do not change --cov-mode 0 (60% sequence coverage threshold per cluster - at least 60% of the sequence length should be shared)
+Please do not change --cov-mode 0 
 
 
 ```bash
@@ -109,4 +110,5 @@ The dataset can be curated with the following command. Feel free to utilize diff
 
 ## Step 4: Prepare presentation
 Please collect your results from the terminal outputs and figures. It will be especially interesting how much of the dataset were filtered depending of different thresholds. You will present them to the other groups in the next session.
+
 
