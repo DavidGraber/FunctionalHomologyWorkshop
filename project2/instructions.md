@@ -2,50 +2,47 @@
 
 ## Overview
 
-This project focuses on similarity detection within the ProtStab train and test dataset ([https://doi.org/10.3390/ijms231810798](https://link.springer.com/article/10.1186/s12864-019-6138-7)). You will perform the following steps:
-- **Clustering:** You will cluster the enzymatic reactions ... tanimoto similarity
-- **Visualization:** For each clustering, you can visualize the connectivity of test sequences with training complexes, giving insights into train-test data leakage present in this database. Which test datapoints would you remove? 
-- **Dataset curation:** After identifying train-test dataleakage, you will curate the test dataset to ensure it's independecne, but also the train dataset to ensure more realistic cross-validation results.
-
+This project focuses on similarity detection within the CATNIP train and test dataset (https://chemrxiv.org/engage/chemrxiv/article-details/670c192f51558a15eff5c275). You will perform the following steps:
+- **Clustering:** You will cluster the enzyme-substrate pairs to find out which enzyme accept which substrates.
+- **Visualization:** These networks can be visualized and the different catalyzed reactions (). Which test datapoints would you remove? 
+- **Tanimoto similarity calculation:** To identify potential train-test dataleakage, you will calculate a pairwise tanimoto similarity matrix that shows chemical similarity of all vs. all substrates.
+- **Heatmap:** To visualize potential train-test dataleakage, you will plot heatmaps of ligand similarity for different reactions.  
+- **Dataset filtering:** OPTIONAL
+  
 ## Key Concepts
 
-### ProtStab
-The ProtStab algorithm utilized a dataset of protein thermal stability measurements (https://www.science.org/doi/10.1126/science.aai7825), specifically focused on protein melting temperatures (Tₘ). It contains experimentally determined Tₘ values for a wide range of wild-type proteins under various experimental conditions. This dataset is widely used for training and evaluating computational models that predict protein thermal stability and its determinants. 
+### CATNIP
+CATNIP is an open-access web interface that uses machine learning to predict which enzymes are most compatible with a given small-molecule substrate, streamlining the design of biocatalytic synthesis. It is built on the BioCatSet1 dataset, which was generated from high-throughput experiments testing the reactivity of α-ketoglutarate-dependent non-heme iron enzymes with over 100 substrates, capturing enzyme–substrate compatibility. By connecting chemical space to protein sequence space, CATNIP aims  to efficiently rank and select enzymes for new synthetic transformations.
 
 ### Similarity Metrics
-The project uses two different similarity metrics to cluster similar protein sequences:
+The project utilizes Morgan fingerprints and tanimoto similarity to quantify substrate similarity:
 
-1. **Sequence identity**: Measures sequence similarity between protein sequences (0-1, higher is more similar)
-2. **Sequence coverage**: Measures how much of the two sequences can be aligned (0-1, higher is more similar)
-
-### Prediction Method
-The approach uses a **XGBoost** regressor:
-- The Regressor is first trained on the full ProtStab training dataset (without hyperparameter tuning) 
-- The Regressor is then trained on a filtered ProtStab training dataset (without hyperparameter tuning) 
-- The resulting cross-validation performances of both datasets are compared
+1. **Morgan fingerprints**: Morgan fingerprints are circular molecular fingerprints representing atom-centered substructures. 
+2. **Tanimoto similarity**: Tanimoto similarity measures the overlap between two fingerprint sets as a ratio of shared to total features. (0-1, higher is more similar)
 
 ## Getting Started
 
 ### 1. Navigate to Project Directory
 ```bash
-cd project1
+cd project2
 ```
 
 ### 2. Download Data
 
 ```bash
-wget https://g-eac64e.765b9d.09d9.data.globus.org/project1_data.tar.gz
+wget https://g-eac64e.765b9d.09d9.data.globus.org/project2_data.tar.gz
 ```
 
 ### 3. Extract Data
 ```bash
-tar --strip-components=1 -xvzf project1_data.tar.gz -C .
+tar --strip-components=1 -xvzf project2_data.tar.gz -C .
 ```
 
 This should provide you with the following files:
-- `protstab_dataset.csv`: Training and test data used in ProtStab paper
-- `protstab_sequences.fasta`: Protein sequence fasta file for clustering
-- `identity_matrix.npz`: Pre-computed sequence identity matrix (all vs. all)
+- `substrate_smiles.csv`: Training and test data used in ProtStab paper
+- `SI_ReactionTable_10012024.csv`: Protein sequence fasta file for clustering
+- `tanimoto_similarity.npz`: Pre-computed sequence identity matrix (all vs. all) as fallback
+- 
 ## Environment Requirements
 
 ### Required Libraries
@@ -111,6 +108,7 @@ The dataset can be curated with the following command. Feel free to utilize diff
 
 ## Step 4: Prepare presentation
 Please collect your results from the terminal outputs and figures. It will be especially interesting how much of the dataset were filtered depending of different thresholds. You will present them to the other groups in the next session. Please create a pull request to upload your results to the GitHub repository. We aim to publish the results including GitHub repository on a preprint server.
+
 
 
 
