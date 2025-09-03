@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import sys
 import os
-from scipy.sparse import csr_matrix
-from scipy.sparse.csgraph import connected_components
 
 def find_clusters(df, tsv_df, tm_threshold):
     """
@@ -222,4 +220,5 @@ if __name__ == "__main__":
         print(f"Error: Tm threshold must be a valid number - {e}")
         sys.exit(1)
     
+
     merge_and_filter_files(tsv_file, csv_file, tm_threshold, outfolder)
