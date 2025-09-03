@@ -18,12 +18,6 @@ The project uses two different similarity metrics to cluster similar protein seq
 1. **Sequence identity**: Measures sequence similarity between protein sequences (0-1, higher is more similar)
 2. **Sequence coverage**: Measures how much of the two sequences can be aligned (0-1, higher is more similar)
 
-### Prediction Method
-The approach uses a **XGBoost** regressor:
-- The Regressor is first trained on the full ProtStab training dataset (without hyperparameter tuning) 
-- The Regressor is then trained on a filtered ProtStab training dataset (without hyperparameter tuning) 
-- The resulting cross-validation performances of both datasets are compared
-
 ## Getting Started
 
 ### 1. Navigate to Project Directory
@@ -111,6 +105,7 @@ The dataset can be curated with the following command. Feel free to utilize diff
 
 ## Step 4: Prepare presentation
 Please collect your results from the terminal outputs and figures. It will be especially interesting how much of the dataset were filtered depending of different thresholds. You will present them to the other groups in the next session. Please create a pull request to upload your results to the GitHub repository. We aim to publish the results including GitHub repository on a preprint server.
+
 
 
 
