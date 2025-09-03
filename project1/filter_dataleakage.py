@@ -32,7 +32,7 @@ def find_clusters(df, tsv_df, tm_threshold):
     ]
     
     # Calculate Tm differences
-    train_train_connections['Tm_diff'] = np.abs(
+    train_train_connections.loc[:, 'Tm_diff'] = np.abs(
         train_train_connections['Tm_source'] - train_train_connections['Tm_target']
     )
     
@@ -85,7 +85,7 @@ def select_cluster_centroids(df, cluster_dict, n_components):
         mean_tm = cluster_df['Tm'].mean()
         
         # Find ID with Tm closest to mean
-        cluster_df['Tm_diff_from_mean'] = np.abs(cluster_df['Tm'] - mean_tm)
+        cluster_df.loc[:, 'Tm_diff_from_mean'] = np.abs(cluster_df['Tm'] - mean_tm)
         centroid_id = cluster_df.loc[cluster_df['Tm_diff_from_mean'].idxmin(), 'ID']
         centroid_ids.append(centroid_id)
     
@@ -224,4 +224,5 @@ if __name__ == "__main__":
     
 
     merge_and_filter_files(tsv_file, csv_file, tm_threshold, outfolder)
+
 
