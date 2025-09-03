@@ -39,7 +39,7 @@ wget https://g-eac64e.765b9d.09d9.data.globus.org/project1_data.tar.gz
 
 ### 3. Extract Data
 ```bash
-tar -xzvf project1_data.tar.gz
+tar -xzvf project1_data.tar.gz -C .
 ```
 
 This should provide you with the following files:
@@ -110,5 +110,6 @@ The dataset can be curated with the following command. Feel free to utilize diff
 
 ## Step 4: Prepare presentation
 Please collect your results from the terminal outputs and figures. It will be especially interesting how much of the dataset were filtered depending of different thresholds. You will present them to the other groups in the next session.
+
 
 
