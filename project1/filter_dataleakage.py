@@ -97,8 +97,7 @@ def filter_data_leakage(merged_df, tsv_df, tm_threshold):
     ]['Source'].unique()
 
     filtered_df = merged_df[~merged_df['ID'].isin(test_ids_to_remove)]
-    num_removed = len(test_ids_to_remove)
-    return filtered_df, num_removed
+    return filtered_df, test_ids_to_remove
 
 def merge_and_filter_files(tsv_path, csv_path, tm_threshold, outfolder):
     try:
@@ -116,7 +115,7 @@ def merge_and_filter_files(tsv_path, csv_path, tm_threshold, outfolder):
             how='left'
         )
 
-        filtered_df, num_removed_test = filter_data_leakage(merged_df, tsv_df, tm_threshold)
+        filtered_df, removed_test_ids = filter_data_leakage(merged_df, tsv_df, tm_threshold)
         cluster_dict, n_components = find_clusters(filtered_df, tsv_df, tm_threshold)
         print(f"Identified {n_components} clusters in training data")
 
@@ -125,23 +124,22 @@ def merge_and_filter_files(tsv_path, csv_path, tm_threshold, outfolder):
 
         train_ids_to_remove = [id_ for id_ in cluster_dict if id_ not in centroid_ids]
         final_filtered_df = filtered_df[~filtered_df['ID'].isin(train_ids_to_remove)]
-        num_removed_train = len(train_ids_to_remove)
 
-        output_path = f"{outfolder}/filtered_clustered_dataset.csv"
-        final_filtered_df.to_csv(output_path, sep=';', index=False)
-        print(f"Saved filtered dataset to {output_path}")
+        # Save filtered CSV
+        output_csv_path = f"{outfolder}/filtered_clustered_dataset.csv"
+        final_filtered_df.to_csv(output_csv_path, sep=';', index=False)
+        print(f"Saved filtered dataset to {output_csv_path}")
 
-        print(f"Removed {num_removed_test} test data points due to Tm difference < {tm_threshold}°C")
-        print(f"Removed {num_removed_train} redundant training data points, keeping only cluster centroids")
+        # Save removed test datapoints
+        test_file = os.path.join(outfolder, f"filtered_datapoints_test_{tm_threshold}_temp.txt")
+        pd.Series(removed_test_ids).to_csv(test_file, index=False, header=False)
 
-        total_nodes = len(final_filtered_df)
-        num_test = final_filtered_df['Test'].sum()
-        num_training = final_filtered_df['Train'].sum()
-        print(f"\nFILTERED DATASET STATISTICS\n{'='*40}")
-        print(f"Total nodes: {total_nodes}")
-        print(f"Test datapoints: {num_test} ({num_test/total_nodes*100:.1f}%)")
-        print(f"Training datapoints: {num_training} ({num_training/total_nodes*100:.1f}%)")
-        print(f"{'='*40}")
+        # Save removed training datapoints
+        train_file = os.path.join(outfolder, f"filtered_datapoints_train_{tm_threshold}_temp.txt")
+        pd.Series(train_ids_to_remove).to_csv(train_file, index=False, header=False)
+
+        print(f"Saved removed test datapoints to {test_file}")
+        print(f"Saved removed training datapoints to {train_file}")
 
     except FileNotFoundError as e:
         print(f"Error: File not found - {e}")
