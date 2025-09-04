@@ -112,8 +112,23 @@ Please collect your results from the terminal outputs and figures. It will be es
 
 
 
+Notes:
 
+python identify_dataleakage.py 
+python identify_dataleakage.py --activity OH 
+python identify_dataleakage.py --activity OH --pairwise_similarity tanimoto_similarity.npz
 
+Optional: investigate additional activities 
+
+python plot_leakage.py --pairwise_similarity tanimoto_similarity.npz
+
+Analyze similar_substrates_all.png and top5_similar_pairs_all.png
+
+Based on this analysis, decide which enzyme function specific analysis could be interesting, e.g.:
+
+python plot_leakage.py --pairwise_similarity tanimoto_similarity.npz --activity OH
+python plot_leakage.py --pairwise_similarity tanimoto_similarity.npz --activity Desat
+python plot_leakage.py --pairwise_similarity tanimoto_similarity.npz --activity Chlorination
 
 
 
