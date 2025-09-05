@@ -4,9 +4,9 @@
 
 This project focuses on similarity detection within the CATNIP train and test dataset (https://chemrxiv.org/engage/chemrxiv/article-details/670c192f51558a15eff5c275). You will perform the following steps:
 - **Clustering:** You will cluster the enzyme-substrate pairs to find out which enzyme accepts which substrates.
-- **Visualization:** These networks will be visualized higlighting train or test datapoints and the diversity of catalyzed reactions (e.g. Chlorination). 
-- **Tanimoto similarity calculation:** To identify potential train-test dataleakage, you will calculate a pairwise tanimoto similarity matrix that shows chemical similarity of all vs. all substrates.
-- **Dataleakage detection:** To visualize potential train-test dataleakage, you will plot heatmaps of ligand similarity and count the occurence of similar train-test pairs for different reactions.  
+- **Visualization:** These networks will be visualized highlighting train or test datapoints and the diversity of catalyzed reactions (e.g. Chlorination). 
+- **Tanimoto similarity calculation:** To identify potential train-test data leakage, you will calculate a pairwise tanimoto similarity matrix that shows chemical similarity of all vs. all substrates.
+- **Data leakage detection:** To visualize potential train-test data leakage, you will plot heatmaps of ligand similarity and count the occurrence of similar train-test pairs for different reactions.  
   
 ## Key Concepts
 
@@ -14,7 +14,7 @@ This project focuses on similarity detection within the CATNIP train and test da
 CATNIP is an open-access web interface that uses machine learning to predict which enzymes are most compatible with a given small-molecule substrate, streamlining the design of biocatalytic synthesis. It is built on the BioCatSet1 dataset, which was generated from high-throughput experiments testing the reactivity of α-ketoglutarate-dependent non-heme iron enzymes with over 100 substrates, capturing enzyme–substrate compatibility. By connecting chemical space to protein sequence space, CATNIP aims to efficiently rank and select enzymes for new synthetic transformations.
 
 ### Similarity Metrics
-The project utilizes Morgan fingerprints and tanimoto similarity to quantify substrate similarity:
+The project utilizes Morgan fingerprints and Tanimoto similarity to quantify substrate similarity:
 
 1. **Morgan fingerprints**: Morgan fingerprints are circular molecular fingerprints representing atom-centered substructures. 
 2. **Tanimoto similarity**: Tanimoto similarity measures the overlap between two fingerprint sets as a ratio of shared to total features. (0-1, higher is more similar)
@@ -71,7 +71,7 @@ conda install numpy matplotlib networkx pandas seaborn rdkit
 ## Step 1: Clustering
 
 Executing the command below will create clusters of substrates that are accepted by the same enzyme.
-It will also provide you with the numberof "Enzyme Clusters" that contain substrates from both Test and Train datasets. 
+It will also provide you with the number of "Enzyme Clusters" that contain substrates from both Test and Train datasets. 
 
 ```bash
 python identify_clusters.py
@@ -85,7 +85,7 @@ Create individual detailed plots for large clusters? (y/n): y
 **Please take a look at the individual cluster image files and find a few examples where substrates from Test and Train datasets in the same cluster also show the same catalyzed reaction (e.g. Chlorination)**.
 
 ## Step 2: Visualization
-For these examples that might result in dataleakage, generate the same plots with **one reaction only (e.g. Chlorination)** by running the following command:
+For these examples that might result in data leakage, generate the same plots with **one reaction only (e.g. Chlorination)** by running the following command:
 
 ```bash
 python identify_clusters.py --activity Chlorination
@@ -93,7 +93,7 @@ python identify_clusters.py --activity Chlorination
 Please take a look at all the output images generated for different reaction types.
 
 ## Step 3: Tanimoto similarity calculation
-Clearly, the same enzyme occuring in Test and Train dataset is not a sufficient criterium for calling it "dataleakage". However, what if the same enzyme performs the same reaction on a very similar substrate? Please execute the following command to calculate the so-called tanimoto similarity (based on Morgan Fingerprints) between all substrates (all vs. all). 
+Clearly, the same enzyme occurring in Test and Train dataset is not a sufficient criterion for calling it "data leakage". However, what if the same enzyme performs the same reaction on a very similar substrate? Please execute the following command to calculate the so-called tanimoto similarity (based on Morgan Fingerprints) between all substrates (all vs. all). 
 
 ```bash
 python calculate_similarity.py
@@ -109,9 +109,9 @@ python identify_clusters.py --activity OH --pairwise_similarity tanimoto_similar
 ```
 
 
-## Step 5: Dataleakage detection
-Until now, we have only explored the potential for dataleakage in some selected clusters and for some selected enzymatic activities. Let's do this a bit more systematically by counting the number of similar substrates between training and test datasets but also within the training dataset as training set redundancy might have a critical impact on cross-validation performance estimation. 
-**The following command will provide three separater barplots for different tanimoto similarity cutoffs. Additionally it will generate a table with the top 5 most similar substrate pairs from train and test dataset.**
+## Step 5: Data leakage detection
+Until now, we have only explored the potential for data leakage in some selected clusters and for some selected enzymatic activities. Let's do this a bit more systematically by counting the number of similar substrates between training and test datasets but also within the training dataset as training set redundancy might have a critical impact on cross-validation performance estimation. 
+**The following command will provide three separate barplots for different tanimoto similarity cutoffs. Additionally it will generate a table with the top 5 most similar substrate pairs from train and test dataset.**
 
 ```bash
 python identify_dataleakage.py --pairwise_similarity tanimoto_similarity.npz
