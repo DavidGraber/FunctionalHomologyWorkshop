@@ -25,7 +25,7 @@ The script saves the adjacency and distance matrices to npy files.
 def parse_args():
     parser = argparse.ArgumentParser(description='Create the adjacency and distance matrices for PDBbind, then compute predictions for CASF2016 test set with training data lookup')
 
-    # Change thresholds here
+    # Setting thresholds for the similarity metrics
     parser.add_argument('--TM_threshold', type=float, default=0.8, help='TM-score threshold')
     parser.add_argument('--Tanimoto_threshold', type=float, default=0.8, help='Tanimoto threshold')
     parser.add_argument('--rmsd_threshold', type=float, default=2.0, help='RMSD threshold')
