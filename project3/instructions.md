@@ -14,7 +14,7 @@ This database of affinity-labelled protein-ligand complexes is most frequently u
 
 ### Binding Affinity
 - **Binding affinity** measures how strongly a ligand binds to a protein
-- Expressed as log Kd/Ki values (lower values indicate stronger binding)
+- Expressed as -log Kd/Ki values (higher values indicate stronger binding)
 - Critical for drug discovery and understanding protein-ligand interactions
 
 ### Similarity Metrics
@@ -22,13 +22,12 @@ The project uses multiple similarity measures to find similar protein-ligand com
 
 1. **TM-Score (Template Modeling Score)**: Measures structural similarity between proteins (0-1, higher is more similar)
 2. **Tanimoto Coefficient**: Measures molecular fingerprint similarity between ligands (0-1, higher is more similar)
-3. **RMSD (Root Mean Square Deviation)**: Measures structural deviation (lower values indicate more similar structures)
-4. **Sequence Similarity**: Measures amino acid sequence similarity (currently disabled in the code)
+3. **Ligand RMSD (Root Mean Square Deviation)**: Measures positional deviation of ligands (lower values indicate more similar conformations)
 
 ### Prediction Method
 The approach uses a **k-nearest neighbors** strategy:
 - For each test complex, find the most similar training complexes
-- Predict binding affinity as a weighted average of the top-k similar complexes
+- Predict binding affinity as a weighted average of the top-k most similar complexes
 - Weights are based on similarity scores
 
 ## Data Requirements
@@ -103,14 +102,12 @@ This runs the code with default parameters:
 - **TM-score threshold:** 0.8
 - **Tanimoto threshold:** 0.8  
 - **RMSD threshold:** 2.0
-- **Sequence similarity threshold:** 0.8
 
 
 ### Parameter Explanation:
 - **TM_threshold:** Minimum TM-score for considering proteins similar (default: 0.8)
 - **Tanimoto_threshold:** Minimum Tanimoto coefficient for considering ligands similar (default: 0.8)
-- **rmsd_threshold:** Maximum RMSD for considering structures similar (default: 2.0)
-- **sequence_similarity_threshold:** Minimum sequence similarity (default: 0.8)
+- **rmsd_threshold:** Maximum RMSD for considering ligand positioning similar (default: 2.0)
 
 ### Customizing parameters
 You can adjust the similarity thresholds to control how similar complexes need to be to be clustered together:
@@ -122,7 +119,7 @@ python main.py --TM_threshold 0.7 --Tanimoto_threshold 0.9 --rmsd_threshold 1.5
 ### Output Files
 
 - **adjacency_matrix.npy:** Binary matrix indicating which complexes are considered similar
-- **distance_matrix.npy:** Continuous similarity scores between all complex pairs
+- **distance_matrix.npy:** Continuous similarity scores between all complex pairs (used in Step 3)
 
 
 
@@ -134,11 +131,11 @@ Now we use the **adjacency matrix** from Step 1 to create a network graph visual
 
 Executing the command below will generate a network graph visualization:
 ```bash
-python ../create_graph.py --clustering adjacency_matrix.npy --mask test_train_mask.npy --labels affinities.npy --ids pairwise_similarity_complexes.json --output_path similarity_graph.png
+python create_graph.py --clustering adjacency_matrix.npy --mask test_train_mask.npy --labels affinities.npy --ids pairwise_similarity_complexes.json --output_path similarity_graph.png
 ```
 
 ### Parameter Explanation
-- **adjacency_matrix** (npy format, required): Path to the `adjacency_matrix` file, which contains the similarity relationships previously indentified in Step 1 (Clustering)
+- **adjacency_matrix** (npy format, required): Path to the `adjacency_matrix` file, which contains the similarity relationships previously identified in Step 1 (Clustering)
 - **mask** (npy format, optional): Path to boolean mask file indicating which nodes should be plotted (along with their neighbors). We will use the `train_test_mask` downloaded in Step 1, which contains 1 for all test complexes and 0 for all training complexes. Like this, only the test complexes with their neighbors will be plotted.
 - **labels** (npy file, optional): Path to a file with numerical labels for color coding nodes (affinities in our case). We will use the `affinities` array downloaded in Step 1, which contains affinity values (pKs) for all complexes. In this way, our complexes in the plot will be color-coded according to their affinity. 
 - **ids** (json file, optional): Path to a file assigning IDs to the columns/rows of the adjacency matrix. We will use the `pairwise_similarity_complexes` json file downloaded in Step 1, because we want the markers in the plot to be labelled with PDB IDs.
@@ -154,13 +151,13 @@ python ../create_graph.py --clustering adjacency_matrix.npy --mask test_train_ma
   - Edges: Similarity connections (based on adjacency matrix)
   - Node colors: Based on labels/affinities (if provided)
   - Edge colors: **Red for test complexes nodes, white for others** (if test_train_mask_provided)
-  - Node sizes: Larger for nodes representing text complexes (if test_train_mask provided)
+  - Node sizes: Larger for nodes representing test complexes (if test_train_mask provided)
 
 
 ### Points to pay attention to: 
 
 1. **Similarity Distribution:** How complexes are connected based on your chosen thresholds
-2. **Data Leakage:** Do the test complexes and the training complexes in a cluster usually have similar affinies?
+2. **Data Leakage:** Do the test complexes and the training complexes in a cluster usually have similar affinities?
 3. **Test Complex Connectivity:** How well test complexes connect to training data
 4. **Train-test splits:** How would you avoid train-test data leakage when training on PDBbind and benchmarking on CASF2016?
 

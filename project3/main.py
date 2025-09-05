@@ -13,10 +13,9 @@ The necessary input data include three distance matrices, for the TM-scores, Tan
 - TM-scores: A measure of the similarity of the protein fold (alignment-based).
 - Tanimoto: A measure of the ligand similarity (fingerprint-based). 
 - RMSD: A measure of the similarity of the ligand positioning in the pocket (pocket-aligned ligand RMSD).
-- Sequence similarity: A measure of the similarity of the protein sequence (sequence-based).
 
 The script is run with the following command:
-python main.py --TM_threshold 0.8 --Tanimoto_threshold 0.8 --rmsd_threshold 2.0 --sequence_similarity_threshold 0.8
+python main.py --TM_threshold 0.8 --Tanimoto_threshold 0.8 --rmsd_threshold 2.0
 
 The thresholds can be changed to create different adjacency and distance matrices.
 The script saves the adjacency and distance matrices to npy files.
@@ -30,13 +29,11 @@ def parse_args():
     parser.add_argument('--TM_threshold', type=float, default=0.8, help='TM-score threshold')
     parser.add_argument('--Tanimoto_threshold', type=float, default=0.8, help='Tanimoto threshold')
     parser.add_argument('--rmsd_threshold', type=float, default=2.0, help='RMSD threshold')
-    parser.add_argument('--sequence_similarity_threshold', type=float, default=0.8, help='Sequence similarity threshold')
     
     # File paths (No change needed)
     parser.add_argument('--psm_tanimoto', type=str, default='pairwise_similarity_matrix_tanimoto.npy', help='Path to the Tanimoto similarity matrix')
     parser.add_argument('--psm_tm', type=str, default='pairwise_similarity_matrix_tm.npy', help='Path to the TM-score similarity matrix')
     parser.add_argument('--psm_rmsd', type=str, default='pairwise_similarity_matrix_rmsd.npy', help='Path to the RMSD similarity matrix')
-    parser.add_argument('--psm_sequence', type=str, default='pairwise_similarity_matrix_sequence.npy', help='Path to the sequence similarity matrix')
     parser.add_argument('--complexes', type=str, default='pairwise_similarity_complexes.json', help='Path to the list of complexes')
     parser.add_argument('--affinity_data', type=str, default='PDBbind_data_dict.json', help='Path to the affinity data')
     parser.add_argument('--data_split', type=str, default='PDBbind_data_split.json', help='Path to the data split')
@@ -47,20 +44,17 @@ def parse_args():
 def create_adjacency_matrix(similarity_matrix_tm, 
                             similarity_matrix_tanimoto, 
                             similarity_matrix_rmsd,
-                            # similarity_matrix_sequence,
                             TM_threshold, 
                             Tanimoto_threshold, 
-                            rmsd_threshold, 
-                            sequence_similarity_threshold):
+                            rmsd_threshold):
 
 
     # CREATE BINARY ADJACENCY MATRIX BASED ON THRESHOLDS FOR TANIMOTO, TM-SCORE AND LABEL DIFFERENCES
-    print(f"Creating adjacency matrix with TM-score threshold {TM_threshold}, Tanimoto threshold {Tanimoto_threshold}, RMSD threshold {rmsd_threshold}, and sequence similarity threshold {sequence_similarity_threshold}...")
+    print(f"Creating adjacency matrix with TM-score threshold {TM_threshold}, Tanimoto threshold {Tanimoto_threshold} and RMSD threshold {rmsd_threshold}...")
     adjacency_matrix = (
         (similarity_matrix_tm > TM_threshold)
         & (similarity_matrix_tanimoto > Tanimoto_threshold)
         & (similarity_matrix_rmsd < rmsd_threshold)
-        # & (similarity_matrix_sequence > sequence_similarity_threshold)
     )
     
     # Finalize the adjacency matrix
@@ -75,7 +69,6 @@ def create_adjacency_matrix(similarity_matrix_tm,
 def create_distance_matrix(similarity_matrix_tm, 
                             similarity_matrix_tanimoto,
                             similarity_matrix_rmsd,
-                            #similarity_matrix_sequence
                             ):
 
     # CREATE DISTANCE MATRIX BASED ON THRESHOLDS FOR TANIMOTO, TM-SCORE AND LABEL DIFFERENCES
@@ -117,27 +110,20 @@ def main():
     else:
         raise FileNotFoundError(f"RMSD similarity matrix file not found: {args.psm_rmsd}")
 
-    # SEQUENCE SIMILARITY MATRIX
-    # if os.path.exists(args.psm_sequence):
-    #     similarity_matrix_sequence = np.load(args.psm_sequence)
-    # else:
-    #     raise FileNotFoundError(f"Sequence similarity matrix file not found: {args.psm_sequence}")
 
-
-    # Create the adjacency and distance matrices
+    # Create the adjacency matrix, representing a clustering of the complexes
     adjacency_matrix = create_adjacency_matrix(similarity_matrix_tm, 
                                                similarity_matrix_tanimoto, 
                                                similarity_matrix_rmsd, 
-                                            #  similarity_matrix_sequence, 
                                                args.TM_threshold, 
                                                args.Tanimoto_threshold, 
-                                               args.rmsd_threshold, 
-                                               args.sequence_similarity_threshold)
+                                               args.rmsd_threshold)
 
+
+    # Create the distance matrix, summarizing the similarity into a single value
     distance_matrix = create_distance_matrix(similarity_matrix_tm, 
                                                similarity_matrix_tanimoto, 
                                                similarity_matrix_rmsd, 
-                                            #  similarity_matrix_sequence
                                                )
 
     # Save the matrices to npy files
