@@ -4,3 +4,16 @@ data/*
 project3/*.json
 *.out
 *.sh
+
+# Project 1
+project1/protstab_dataset.csv
+project1/protstab_sequences.fasta
+project1/identity_matrix.npz
+
+# Project 2
+project2/SI_ReactionTable_10012024.csv
+project2/substrate_smiles.csv
+project2/tanimoto_similarity.npz
+
+# Project 3
+
