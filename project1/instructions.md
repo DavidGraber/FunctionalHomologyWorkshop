@@ -5,12 +5,12 @@
 This project focuses on similarity detection within the ProtStab train and test dataset ([https://doi.org/10.3390/ijms231810798](https://link.springer.com/article/10.1186/s12864-019-6138-7)). You will perform the following steps:
 - **Clustering:** You will cluster the protein sequences using different sequence identity and sequence coverage thresholds.
 - **Visualization:** For each clustering, you can visualize the connectivity of test sequences with training complexes, giving insights into train-test data leakage present in this database. Which test datapoints would you remove? 
-- **Dataset curation:** After identifying train-test dataleakage, you will curate the test dataset to ensure it's independecne, but also the train dataset to ensure more realistic cross-validation results.
+- **Dataset curation:** After identifying train-test dataleakage, you will curate the test dataset to ensure its independence, but also the train dataset to ensure more realistic cross-validation results.
 
 ## Key Concepts
 
 ### ProtStab
-The ProtStab algorithm utilized a dataset of protein thermal stability measurements (https://www.science.org/doi/10.1126/science.aai7825), specifically focused on protein melting temperatures (Tₘ). It contains experimentally determined Tₘ values for a wide range of wild-type proteins under various experimental conditions. This dataset is widely used for training and evaluating computational models that predict protein thermal stability and its determinants. 
+The ProtStab algorithm used a dataset of protein thermal stability measurements (https://www.science.org/doi/10.1126/science.aai7825), specifically focused on protein melting temperatures (Tₘ). It contains experimentally determined Tₘ values for a wide range of wild-type proteins under various experimental conditions. This dataset is widely used for training and evaluating computational models that predict protein thermal stability and its determinants. 
 
 ### Similarity Metrics
 The project uses two different similarity metrics to cluster similar protein sequences:
@@ -69,9 +69,9 @@ conda install -c conda-forge -c bioconda mmseqs2
 
 ## Step 1: Clustering
 
-Executing the command below will use mmseqs2's functionality easy-linlust to cluster the sequences based on there sequence identity.
+Executing the command below will use mmseqs2's functionality easy-linclust to cluster the sequences based on their sequence identity.
 
-This example utilizes the parameters:
+This example uses the parameters:
 
 - **Sequence identity threshold:** --min-seq-id 0.6 (60% sequence identity threshold per cluster)
 - **Sequence coverage threshold:** -c 0.6 (60% sequence coverage threshold per cluster - at least 60% of the sequence length should be shared)
@@ -83,25 +83,35 @@ Please do not change --cov-mode 0
 mkdir -p result_60_60 && mmseqs easy-linclust protstab_sequences.fasta result_60_60/output result_60_60 --min-seq-id 0.6 -c 0.6 --cov-mode 0
 ```
 ## Step 2: Visualization & Analysis
-The resulting tsv file clusteres the input sequences into sequence identity clusters. This cluster information can be added to the ProtStab dataset.
-With this information, we can investigate train and test set for data leakage, for example by visualizing as network. Please run the following command:
+The resulting tsv file clusters the input sequences into sequence identity clusters. This cluster information can be added to the ProtStab dataset to investigate train and test set for data leakage, for example by visualizing as network. Please run the following command:
 
 ```bash
  python analyze_dataleakage.py result_60_60/output_cluster.tsv protstab_dataset.csv identity_matrix.npz result_60_60
 ```
+### Analyse the Plot
+- Proteins are shown as markers, with a TM-label above and the ID below the marker
+- Markers representing test set complexes have a red edge
+- Markers representing training set complexes have a black edge
+- Connections represent detected sequence similarities, labelled with the sequence identity value.
+
 ### How to define data leakage?
-Please think about the following: Which datapoints could be dentrimental and which beneficial for model performance? (hint: compare the Tm values within the clusters). Which would you remove from train/test set?
+Please think about the following: Which datapoints could be detrimental and which beneficial for model performance? (hint: compare the Tm values within the clusters). Which would you remove from train/test set?
 
 ## Step 3: Dataset curation
-In the last step, the ProtStab dataset will be curated to remove similar datapoints from the test dataset. Additionally, similar datapoints are also from the training dataset as those could lead to an overestimation of the performance determined via cross-validation.
+In the last step, the ProtStab dataset will be curated to remove similar datapoints from the test dataset. Additionally, similar datapoints are also removed from the training dataset as those could lead to an overestimation of the training performance determined via cross-validation.
 
 For this purpose, we investigate all datapoints (test & train) from the same similarity cluster (e.g. those sharing 60% sequence identity). Only datapoints with less than X °C (e.g. 5 °C) temperature difference are removed as the others might contain interesting information about differences in thermostability.
 
-The dataset can be curated with the following command. Feel free to utilize different clustering and temperature thresholts.
+The dataset can be curated with the following command. Feel free to use different clustering and temperature thresholds.
 
 ```bash
  python filter_dataleakage.py result_60_60/output_cluster.tsv protstab_dataset.csv 5 result_60_60
 ```
+
+### Output:
+- A filtered version of the dataset `filtered_clustered_dataset.csv`
+- A .txt file showing the datapoints removed from the **test set**
+- A .txt file showing the datapoints removed from the **training set**
 
 ## Step 4: Prepare presentation
 Please collect your results from the terminal outputs and figures. It will be especially interesting how much of the dataset were filtered depending of different thresholds. You will present them to the other groups in the next session. Please create a pull request to upload your results to the GitHub repository. We aim to publish the results including GitHub repository on a preprint server.
