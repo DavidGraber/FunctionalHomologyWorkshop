@@ -4,6 +4,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit import DataStructs
 from rdkit import RDLogger
+from rdkit.Chem import rdFingerprintGenerator
 
 # Suppress RDKit warnings
 RDLogger.DisableLog('rdApp.*')
@@ -20,7 +21,8 @@ def get_fingerprint(smiles, substrate_id):
         if mol is None:
             print(f"Error: Invalid SMILES for Substrate ID {substrate_id}: {smiles}")
             return None
-        return AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=2048)
+        mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
+        return mfpgen.GetCountFingerprint(mol)
     except Exception as e:
         print(f"Error processing Substrate ID {substrate_id}: {smiles}. Exception: {str(e)}")
         return None
