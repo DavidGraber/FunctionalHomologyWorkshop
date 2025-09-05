@@ -41,7 +41,7 @@ This should provide you with the following files:
 - `substrate_smiles.csv`: Training and test data used in ProtStab paper
 - `SI_ReactionTable_10012024.csv`: Protein sequence fasta file for clustering
 - `tanimoto_similarity.npz`: Pre-computed sequence identity matrix (all vs. all) as fallback
-- 
+
 ## Environment Requirements
 
 ### Required Libraries
@@ -82,7 +82,15 @@ You can expect quite a number of clusters. To get more detailed insights, cluste
 ```bash
 Create individual detailed plots for large clusters? (y/n): y
 ```
+
+\
 **Please take a look at the individual cluster image files and find a few examples where substrates from Test and Train datasets in the same cluster also show the same catalyzed reaction (e.g. Chlorination)**.
+
+### Output Explanation:
+
+- Markers represent substrates and are colored by their reaction type (with legend)
+- Marker edge color represents dataset membership (red=Test, black=Train)
+- Connections show that the substrates are accepted by the same enzyme
 
 ## Step 2: Visualization
 For these examples that might result in data leakage, generate the same plots with **one reaction only (e.g. Chlorination)** by running the following command:
@@ -90,10 +98,19 @@ For these examples that might result in data leakage, generate the same plots wi
 ```bash
 python identify_clusters.py --activity Chlorination
 ```
-Please take a look at all the output images generated for different reaction types.
+**Take a look at all the output images generated for different reaction types.**
+Reaction Keywords present in the dataset:
+- Chlorination
+- Desat
+- OH
+- Transamination
+- C-C Bond Formation
+- OH/Desat
+- Epoxidation
+- O-demethylation
 
 ## Step 3: Tanimoto similarity calculation
-Clearly, the same enzyme occurring in Test and Train dataset is not a sufficient criterion for calling it "data leakage". However, what if the same enzyme performs the same reaction on a very similar substrate? Please execute the following command to calculate the so-called tanimoto similarity (based on Morgan Fingerprints) between all substrates (all vs. all). 
+Clearly, the same enzyme occurring in Test and Train dataset is not a sufficient criterion for calling it "data leakage". However, what if the same enzyme performs the same reaction on a very similar substrate? Please execute the following command to calculate the so-called Tanimoto similarity (based on Morgan Fingerprints) between all substrates (all vs. all). 
 
 ```bash
 python calculate_similarity.py
