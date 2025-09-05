@@ -23,12 +23,12 @@ Example usage:
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Create a network graph from a clustering file, including selected nodes and their neighbors.")
-    parser.add_argument('--clustering', type=str, required=True, help='Path to the adjacency matrix (npy file).')
-    parser.add_argument('--mask', type=str, help='Boolean mask indicating which nodes (and their neighbors) should be plotted (npy file)')
-    parser.add_argument('--ids', type=str, help='Path to a file assigning ids to the columns/rows of the adjacency matrix (json file).')
-    parser.add_argument('--labels', type=str, help='Path to a file with numerical labels for color coding (npy file).')
-    parser.add_argument('--output_path', '-o', type=str, default='similarity_graph.png', help='Output path for the graph.')
+    parser = argparse.ArgumentParser(description="Create a network graph from a clustering file.")
+    parser.add_argument('--clustering', '-c', type=str, required=True, help='Path to clustering file, either adjacency matrix (.npy) or mmseqs2-style clustering (.tsv).')
+    parser.add_argument('--mask', '-m', type=str, help='Boolean mask indicating which nodes (and their neighbors) should be plotted (npy file)')
+    parser.add_argument('--ids', '-i', type=str, help='Path to a file assigning ids to the columns/rows of the adjacency matrix (json file).')
+    parser.add_argument('--labels', '-l', type=str, help='Path to a file with numerical labels for color coding (npy file).')
+    parser.add_argument('--output_path', '-o', type=str, default='similarity_graph.png', help='Output path for graph')
     args = parser.parse_args()
     return args
 
@@ -84,7 +84,7 @@ def create_nx_graph(adjacency_matrix, ids=None, mask=None, labels=None, output_p
     if mask is not None:
         mask = np.atleast_1d(mask)
         edgecolors = ['red' if i else 'white' for i in mask]
-        node_sizes = [400   if i else 300     for i in mask]
+        node_sizes = [500   if i else 300     for i in mask]
         included_indices = np.where(mask)[0]
         print(f"Processing {len(included_indices)} nodes with mask=1 {[ids[x] for x in included_indices[0:5]]}...", flush=True)
 
