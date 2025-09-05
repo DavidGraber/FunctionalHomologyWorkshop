@@ -166,31 +166,17 @@ python create_graph.py --clustering adjacency_matrix.npy --mask test_train_mask.
 
 
 ## Step 3: CASF2016 predictions using Lookup
-Using the distance matrix computed in **Step 1**, we can now make predictions for each complex of the CASF2016 test set by searching the most similar training complexes and averaging their label. For this, run the following command
+Using the pairwise distance matrix for PDBbind that we computed in Step 1, we can now make predictions for each complex of the CASF2016 test set by searching the N most similar training complexes and averaging their label. For this, run the command below - If you achieve a **Pearson Correlation higher than 0.507** or an **RMSE lower than 1.592**, then you have already outperformed a published binding affinity prediction model!
 
 ```bash
 python make_lookup_predictions.py
 ```
 This runs the code with default parameters:
-- **distance_matrix:** distance_matrix.npy
+- **top_n:** 5 (Number of top most similar training complexes to take into account)
+- **distance_matrix:** distance_matrix.npy 
 - **complexes:** pairwise_similarity_complexes.json  
 - **affinity_data:** affinities.npy
 - **data_split:** train_test_mask.npy
-- **top_n:** 5
-
-### Parameter Explanation
-- **matrix:** Path to the distance matrix file
-- **complexes:** Path to the list of complex identifiers
-- **affinity_data:** Path to the binding affinity data
-- **data_split:** Path to the train/test split information mask (1 for test, 0 for train)
-- **top_n:** Number of most similar training complexes to use for prediction 
-
-### Customizing Parameters
-You can adjust the parameters to use different files or change the number of similar complexes:
-
-```bash
-python make_lookup_predictions.py --top_n 10 --matrix distance_matrix.npy
-```
 
 If you get any FileNotFoundErrors, please check all paths and run the script with corrected paths:
 
@@ -198,8 +184,13 @@ If you get any FileNotFoundErrors, please check all paths and run the script wit
 python make_lookup_predictions.py --matrix <path> --complexes <path> --affinity_data <path> --data_split <path>
 ```
 
-### Output Files
-- **CASF2016_predictions_top{top_n}.png:** Scatter plot showing predicted vs true binding affinities for the CASF2016 test set
+### Customizing Parameters
+You can adjust the `top_n` parameter to change the number of similar training complexes that are used to make a prediction for the test complexes:
+
+```bash
+python make_lookup_predictions.py --top_n 5
+```
+
 
 ### Evaluation Metrics
 
@@ -212,4 +203,21 @@ The generated plot shows:
 - Blue dots: Predicted vs true binding affinities for test complexes
 - Red dashed line: Perfect prediction line (y=x)
 - Title includes correlation and RMSE values
+
+
+## Step 4: Adding Dataset Filtering to the Lookup
+As our distance matrix is based on the sum of the Tanimoto and the TM scores, we can simulate training dataset filtering based on these scores. The optional parameters `TM_threshold` and `Tanimoto_threshold` can be used to filter out training complexes with high similarity to a test complex. 
+
+**Example:** Tanimoto_threshold = 0.8 and TM_threshold 0.8 removes all training complex with scores > 0.8 from the lookup search (sets the corresponding distance matrix elements to zero). 
+
+Run the command below and observe how the performance of the lookup algorithm develops. Try also other thresholds. How much do you have to lower the thresholds to remove train-test data leakage?
+
+```bash
+python make_lookup_predictions.py --top_n 5 --TM_threshold 0.8 --Tanimoto_threshold 0.8
+```
+
+
+
+
+
 
