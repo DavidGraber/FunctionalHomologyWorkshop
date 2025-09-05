@@ -263,6 +263,7 @@ def create_substrate_cluster_network(csv_file_path, activity_filter=None, simila
         plt.tight_layout()
         output_file = f'enzyme_substrate_pair_network_{activity_filter or "all"}.png'
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        
         plt.show()
 
         print("Data Leakage Statistics:")
@@ -273,6 +274,7 @@ def create_substrate_cluster_network(csv_file_path, activity_filter=None, simila
         for enzyme_id, substrate_ids in clusters_by_size:
             print(f"Enzyme E{enzyme_id} ({len(substrate_ids)} substrates)")
 
+        print(f"\nNetwork visualization saved as '{output_file}'")
         return enzyme_substrates, clusters_by_size, substrate_status, substrate_reaction, similarity_file
 
     except FileNotFoundError:
@@ -372,8 +374,6 @@ if __name__ == "__main__":
         print("No valid clusters found, exiting.")
     else:
         enzyme_data, clusters_by_size, substrate_status, substrate_reaction, similarity_file = result
-        output_file = f"substrate_cluster_subplots_test_train_{args.activity or 'all'}.png"
-        print(f"\nNetwork visualization saved as '{output_file}'")
 
         large_clusters = [item for item in clusters_by_size if len(item[1]) >= 5]
         if large_clusters:
