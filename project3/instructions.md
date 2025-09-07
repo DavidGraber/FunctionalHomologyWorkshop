@@ -216,7 +216,8 @@ Run the command below and observe how the performance of the lookup algorithm de
 python make_lookup_predictions.py --top_n 5 --TM_threshold 0.8 --Tanimoto_threshold 0.8
 ```
 
-
+## Step 5: Prepare presentation
+Please collect your results from the terminal outputs and figures. You will present them to the other groups in the next session. Please push your results to your branch of the repository (see instructions in readme file). We aim to publish the results including GitHub repository on a preprint server.
 
 
 

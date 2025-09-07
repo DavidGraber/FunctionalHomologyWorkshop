@@ -1,4 +1,4 @@
-data/*
+data*/
 *.npy
 *.tar.gz
 project3/*.json
