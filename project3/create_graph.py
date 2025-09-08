@@ -5,6 +5,7 @@ import numpy as np
 import argparse
 import networkx as nx
 import matplotlib.pyplot as plt
+import pickle
 
 '''
 This script creates a network graph from a similarity matrix.
@@ -29,6 +30,7 @@ def parse_arguments():
     parser.add_argument('--ids', '-i', type=str, help='Path to a file assigning ids to the columns/rows of the adjacency matrix (json file).')
     parser.add_argument('--labels', '-l', type=str, help='Path to a file with numerical labels for color coding (npy file).')
     parser.add_argument('--output_path', '-o', type=str, default='similarity_graph.png', help='Output path for graph')
+    parser.add_argument('--graph_output_path', '-g', type=str, default=None, help='Optional output path to save the networkx file to.')
     args = parser.parse_args()
     return args
 
@@ -62,7 +64,7 @@ def clustering_to_adjacency_matrix(clustering, ids=None):
 
 
 
-def create_nx_graph(adjacency_matrix, ids=None, mask=None, labels=None, output_path="similarity_graph.png"):
+def create_nx_graph(adjacency_matrix, ids=None, mask=None, labels=None, output_path="similarity_graph.png", graph_output_path=None):
 
     print(f"Creating network graph from adjacency matrix with shape {adjacency_matrix.shape}...")
     num_total_nodes = adjacency_matrix.shape[0]
@@ -182,6 +184,14 @@ def create_nx_graph(adjacency_matrix, ids=None, mask=None, labels=None, output_p
     print_metrics(adjacency_matrix, mask)
     # ------------------------------------------------------------------------------------------------
 
+    # Optionally write the NetworkX graph to a file
+    if graph_output_path:
+        print(f"Writing NetworkX graph to {graph_output_path}...")
+        with open(graph_output_path, "wb") as f:
+            pickle.dump(G, f)
+        print("Graph file saved!")
+    # ------------------------------------------------------------------------------------------------
+
 
 def print_metrics(adjacency_matrix, mask=None):
 
@@ -252,7 +262,7 @@ def main():
     else:
         raise ValueError(f"Unsupported file type: {args.clustering}")
 
-    create_nx_graph(adjacency_matrix, ids, mask, labels, args.output_path)
+    create_nx_graph(adjacency_matrix, ids, mask, labels, args.output_path, args.graph_output_path)
 
 if __name__ == "__main__":
     main()
