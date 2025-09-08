@@ -9,6 +9,7 @@ project3/*.json
 project1/protstab_dataset.csv
 project1/protstab_sequences.fasta
 project1/identity_matrix.npz
+project1/training_and_evaluation.py
 
 # Project 2
 project2/SI_ReactionTable_10012024.csv

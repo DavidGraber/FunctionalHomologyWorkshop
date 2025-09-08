@@ -22,7 +22,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def plot_predictions(y_true, y_pred, title, label):
+def plot_predictions(y_true, y_pred, title, label, save_path):
     plt.figure(figsize=(8, 8))
     plt.scatter(y_true, y_pred, alpha=0.5, c='blue', label=label)
     axislim = 16
@@ -35,6 +35,7 @@ def plot_predictions(y_true, y_pred, title, label):
     plt.axvline(0, color='grey', linestyle='--')
     plt.title(title, fontsize=14)
     plt.legend(fontsize=12)
+    plt.savefig(save_path, dpi=300)
     plt.show()
 
 
@@ -119,13 +120,14 @@ def main():
     # Compute the predictions
     true_labels, predicted_labels, r, rmse = compute_lookup_predictions(distance_matrix, complexes, affinity_data, test_or_not, args.top_n)
 
+    save_path = f'CASF2016_predictions_top_{args.top_n}_{args.TM_threshold}_{args.Tanimoto_threshold}.png'
+    title = f"CASF2016 predictions\nWeighted average of labels of top {args.top_n} similar training complexes\nR = {r:.3f}, RMSE = {rmse:.3f}"
     plot_predictions(true_labels, 
                      predicted_labels, 
-                     f"CASF2016 predictions\nWeighted average of labels of top {args.top_n} similar training complexes\nR = {r:.3f}, RMSE = {rmse:.3f}",
-                     f"CASF2016 Predictions")
+                     title,
+                     f"CASF2016 Predictions",
+                     save_path)
     
-    save_path = f'CASF2016_predictions_top_{args.top_n}_{args.TM_threshold}_{args.Tanimoto_threshold}.png'
-    plt.savefig(save_path, dpi=300)
     print(f"Saved scatterplot to {save_path}")
 
 
