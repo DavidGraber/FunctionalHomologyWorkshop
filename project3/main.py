@@ -31,12 +31,12 @@ def parse_args():
     parser.add_argument('--rmsd_threshold', type=float, default=2.0, help='RMSD threshold')
     
     # File paths (No change needed)
-    parser.add_argument('--psm_tanimoto', type=str, default='pairwise_similarity_matrix_tanimoto.npy', help='Path to the Tanimoto similarity matrix')
-    parser.add_argument('--psm_tm', type=str, default='pairwise_similarity_matrix_tm.npy', help='Path to the TM-score similarity matrix')
-    parser.add_argument('--psm_rmsd', type=str, default='pairwise_similarity_matrix_rmsd.npy', help='Path to the RMSD similarity matrix')
-    parser.add_argument('--complexes', type=str, default='pairwise_similarity_complexes.json', help='Path to the list of complexes')
-    parser.add_argument('--affinity_data', type=str, default='PDBbind_data_dict.json', help='Path to the affinity data')
-    parser.add_argument('--data_split', type=str, default='PDBbind_data_split.json', help='Path to the data split')
+    parser.add_argument('--psm_tanimoto', type=str, default='./data/pairwise_similarity_matrix_tanimoto.npy', help='Path to the Tanimoto similarity matrix')
+    parser.add_argument('--psm_tm', type=str, default='./data/pairwise_similarity_matrix_tm.npy', help='Path to the TM-score similarity matrix')
+    parser.add_argument('--psm_rmsd', type=str, default='./data/pairwise_similarity_matrix_rmsd.npy', help='Path to the RMSD similarity matrix')
+    parser.add_argument('--complexes', type=str, default='./data/pairwise_similarity_complexes.json', help='Path to the list of complexes')
+    parser.add_argument('--affinity_data', type=str, default='./data/PDBbind_data_dict.json', help='Path to the affinity data')
+    parser.add_argument('--data_split', type=str, default='./data/PDBbind_data_split.json', help='Path to the data split')
 
     return parser.parse_args()
 

@@ -15,27 +15,27 @@ def parse_args():
     
     # File paths (No change needed)
     parser.add_argument('--matrix', type=str, default='distance_matrix.npy', help='Path to the distance matrix')
-    parser.add_argument('--complexes', type=str, default='pairwise_similarity_complexes.json', help='Path to the list of complexes')
-    parser.add_argument('--affinity_data', type=str, default='affinities.npy', help='Path to the affinity data')
-    parser.add_argument('--data_split', type=str, default='test_train_mask.npy', help='Path to the data split')
+    parser.add_argument('--complexes', type=str, default='./data/pairwise_similarity_complexes.json', help='Path to the list of complexes')
+    parser.add_argument('--affinity_data', type=str, default='./data/affinities.npy', help='Path to the affinity data')
+    parser.add_argument('--data_split', type=str, default='./data/test_train_mask.npy', help='Path to the data split')
 
     return parser.parse_args()
 
 
 def plot_predictions(y_true, y_pred, title, label):
-    plt.figure(figsize=(8, 8))
-    plt.scatter(y_true, y_pred, alpha=0.5, c='blue', label=label)
+    fig, ax = plt.subplots(dpi=300, figsize=(8, 8))
+    ax.scatter(y_true, y_pred, alpha=0.5, c='blue', label=label)
     axislim = 16
-    plt.plot([0, axislim], [0, axislim], color='red', linestyle='--')
-    plt.xlabel('True pK Values', fontsize=12)
-    plt.ylabel('Predicted pK Values', fontsize=12)
-    plt.ylim(0, axislim)
-    plt.xlim(0, axislim)
-    plt.axhline(0, color='grey', linestyle='--')
-    plt.axvline(0, color='grey', linestyle='--')
-    plt.title(title, fontsize=14)
-    plt.legend(fontsize=12)
-    plt.show()
+    ax.plot([0, axislim], [0, axislim], color='red', linestyle='--')
+    ax.set_xlabel('True pK Values', fontsize=12)
+    ax.set_ylabel('Predicted pK Values', fontsize=12)
+    ax.set_ylim(0, axislim)
+    ax.set_xlim(0, axislim)
+    ax.axhline(0, color='grey', linestyle='--')
+    ax.axvline(0, color='grey', linestyle='--')
+    ax.set_title(title, fontsize=14)
+    ax.legend(fontsize=12)
+    return fig
 
 
 def compute_lookup_predictions(distance_matrix, complexes, affinity_data, test_or_not, top_n):
@@ -119,13 +119,13 @@ def main():
     # Compute the predictions
     true_labels, predicted_labels, r, rmse = compute_lookup_predictions(distance_matrix, complexes, affinity_data, test_or_not, args.top_n)
 
-    plot_predictions(true_labels, 
+    fig = plot_predictions(true_labels, 
                      predicted_labels, 
                      f"CASF2016 predictions\nWeighted average of labels of top {args.top_n} similar training complexes\nR = {r:.3f}, RMSE = {rmse:.3f}",
                      f"CASF2016 Predictions")
     
     save_path = f'CASF2016_predictions_top_{args.top_n}_{args.TM_threshold}_{args.Tanimoto_threshold}.png'
-    plt.savefig(save_path, dpi=300)
+    fig.savefig(save_path, dpi=300)
     print(f"Saved scatterplot to {save_path}")
 
 
