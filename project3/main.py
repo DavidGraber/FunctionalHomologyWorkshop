@@ -3,6 +3,7 @@ import json
 import numpy as np
 import argparse
 import matplotlib.pyplot as plt
+from multiprocessing import Pool
 
 """
 This script creates the adjacency and distance matrices for the PDBbind database, then computes predictions for CASF2016 test set with training data lookup. 
@@ -25,10 +26,10 @@ The script saves the adjacency and distance matrices to npy files.
 def parse_args():
     parser = argparse.ArgumentParser(description='Create the adjacency and distance matrices for PDBbind, then compute predictions for CASF2016 test set with training data lookup')
 
-    # Setting thresholds for the similarity metrics
-    parser.add_argument('--TM_threshold', type=float, default=0.8, help='TM-score threshold')
-    parser.add_argument('--Tanimoto_threshold', type=float, default=0.8, help='Tanimoto threshold')
-    parser.add_argument('--rmsd_threshold', type=float, default=2.0, help='RMSD threshold')
+    # # Setting thresholds for the similarity metrics
+    # parser.add_argument('--TM_threshold', type=float, default=0.8, help='TM-score threshold')
+    # parser.add_argument('--Tanimoto_threshold', type=float, default=0.8, help='Tanimoto threshold')
+    # parser.add_argument('--rmsd_threshold', type=float, default=2.0, help='RMSD threshold')
     
     # File paths (No change needed)
     parser.add_argument('--psm_tanimoto', type=str, default='./data/pairwise_similarity_matrix_tanimoto.npy', help='Path to the Tanimoto similarity matrix')
@@ -112,26 +113,37 @@ def main():
 
 
     # Create the adjacency matrix, representing a clustering of the complexes
-    adjacency_matrix = create_adjacency_matrix(similarity_matrix_tm, 
+    params = []
+    for TM_thresh in np.linspace(0,1,11):
+        for tanimoto_thresh in np.linspace(0,1,11):
+            for rmsd_thresh in np.linspace(0,1,11):
+                params.append(
+                    (similarity_matrix_tm, similarity_matrix_tanimoto, similarity_matrix_rmsd,TM_thresh, tanimoto_thresh, rmsd_thresh)
+                )
+    with Pool(6) as p:
+        p.map(worker, params)
+
+
+def worker(params):
+    similarity_matrix_tm, similarity_matrix_tanimoto, similarity_matrix_rmsd,TM_thresh, tanimoto_thresh, rmsd_thresh = params
+    print(f"Case: params={{TM_thresh={TM_thresh}, tanimoto_thresh={tanimoto_thresh}, rmsd_thresh={rmsd_thresh}}}")
+    ofa = f'adjacency_matrix_{TM_thresh}_{tanimoto_thresh}_{rmsd_thresh}.npy'
+    ofd = f'distance_matrix_{TM_thresh}_{tanimoto_thresh}_{rmsd_thresh}.npy'
+
+    adjm = create_adjacency_matrix(similarity_matrix_tm, 
                                                similarity_matrix_tanimoto, 
                                                similarity_matrix_rmsd, 
-                                               args.TM_threshold, 
-                                               args.Tanimoto_threshold, 
-                                               args.rmsd_threshold)
-
-
-    # Create the distance matrix, summarizing the similarity into a single value
-    distance_matrix = create_distance_matrix(similarity_matrix_tm, 
-                                               similarity_matrix_tanimoto, 
-                                               similarity_matrix_rmsd, 
-                                               )
-
-    # Save the matrices to npy files
-    np.save('adjacency_matrix.npy', adjacency_matrix)
-    print(f"Saved adjacency matrix to adjacency_matrix.npy")
-    np.save('distance_matrix.npy', distance_matrix)
-    print(f"Saved distance matrix to distance_matrix.npy")
-
+                                               TM_thresh, 
+                                               tanimoto_thresh, 
+                                               rmsd_thresh)
+    dm = create_distance_matrix(similarity_matrix_tm, 
+                                        similarity_matrix_tanimoto, 
+                                        similarity_matrix_rmsd, 
+                                        )
+    np.save(ofa, adjm)
+    print(f"Saved adjacency matrix to {ofa}")
+    np.save(ofd, dm)
+    print(f"Saved distance matrix to {ofd}")
 
 if __name__ == "__main__":
     main()
