@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  p3_run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -13,10 +13,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'  # or whichever version you need
+          python-version: '3.13'
       - name: Install dependencies from proj subdirectory
         run: |
-          cd cd project3
+          cd project3
           pip install .
       - name: Download
         run: |
