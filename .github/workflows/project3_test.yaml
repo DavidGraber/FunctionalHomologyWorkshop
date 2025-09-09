@@ -1,0 +1,28 @@
+name: test_project3
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  p3_run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install dependencies from proj subdirectory
+        run: |
+          cd project3
+          pip install .
+      - name: Download
+        run: |
+          cd project3
+          fhw_p3 download
+      - name : run 1 part
+        run: |
+          cd project3
+          fhw_p3 process

@@ -1,0 +1,2 @@
+[console_scripts]
+fhw_p3 = fhw_p3.main:main
