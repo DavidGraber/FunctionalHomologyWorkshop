@@ -18,3 +18,4 @@ project2/tanimoto_similarity.npz
 # Project 3
 project3/data
 .DS_Store
+*__pycache__*
