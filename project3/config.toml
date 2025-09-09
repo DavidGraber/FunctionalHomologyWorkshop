@@ -1,0 +1,9 @@
+download_url = "https://g-eac64e.765b9d.09d9.data.globus.org/project3_data.tar.gz"
+threads = 1
+outdir = 'data'
+#tm_threshold = [0.1, 0.2, 0.3, 0.5, 0.7, 0.8, 0.9]
+#tan_threshold = [0.1, 0.2, 0.3, 0.5, 0.7, 0.8, 0.9]
+#rmsd_threshold = [2.0, 5.0, 10.0, 50.0]
+tm_threshold = [0.1, 0.2]
+tan_threshold = [0.1]
+rmsd_threshold = [2.0]

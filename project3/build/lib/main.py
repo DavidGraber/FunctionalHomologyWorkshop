@@ -114,14 +114,17 @@ def main():
 
     # Create the adjacency matrix, representing a clustering of the complexes
     params = []
-    for TM_thresh in np.linspace(0,1,11):
-        for tanimoto_thresh in np.linspace(0,1,11):
-            for rmsd_thresh in np.linspace(0,1,11):
-                params.append(
-                    (similarity_matrix_tm, similarity_matrix_tanimoto, similarity_matrix_rmsd,TM_thresh, tanimoto_thresh, rmsd_thresh)
-                )
-    with Pool(6) as p:
-        p.map(worker, params)
+    # for TM_thresh in np.linspace(0,1,3):
+    #     for tanimoto_thresh in np.linspace(0,1,3):
+    #         for rmsd_thresh in np.linspace(0,1,3):
+    #             params.append(
+    #                 (similarity_matrix_tm, similarity_matrix_tanimoto, similarity_matrix_rmsd,TM_thresh, tanimoto_thresh, rmsd_thresh)
+    #             )
+    params.append(
+        (similarity_matrix_tm, similarity_matrix_tanimoto, similarity_matrix_rmsd, 0.4, 0.4, 3.0)
+    )
+    for i in params:
+        worker(i)
 
 
 def worker(params):

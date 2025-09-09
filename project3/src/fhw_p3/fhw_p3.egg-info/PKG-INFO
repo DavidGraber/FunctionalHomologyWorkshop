@@ -1,3 +1,17 @@
+Metadata-Version: 2.4
+Name: fhw_p3
+Version: 0.1.0
+Summary: Project 3 for Functional Homology Workshop analysis scripts
+Author: David Graber, Peter Stockinger, Aisha Shah, Fredrik Trulsson, Ward Deboutte
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: networkx
+Requires-Dist: matplotlib
+Requires-Dist: seaborn
+Requires-Dist: scipy
+
 # Project 3: Protein-Ligand Binding Affinity Prediction
 
 ## Overview
@@ -47,6 +61,7 @@ The project requires several data files containing pre-computed similarity matri
 ```bash
 cd project3
 ```
+
 
 ### 2. Download Data
 ```bash

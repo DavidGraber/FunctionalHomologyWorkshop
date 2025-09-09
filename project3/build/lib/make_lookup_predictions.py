@@ -48,7 +48,7 @@ def compute_lookup_predictions(distance_matrix, complexes, affinity_data, test_o
 
     # Loop over the test complexes and look for the most similar training complexes
     # ---------------------------------------------------------------------------------
-    print(f"Computing predictions for CASF2016 test set with training data lookup")
+    #(f"Computing predictions for CASF2016 test set with training data lookup")
 
     test_complex_indices = np.where(test_or_not)[0]
     test_complexes = [complexes[i] for i in test_complex_indices]
@@ -109,24 +109,31 @@ def main():
     # Filter the distance matrix based on TM and Tanimoto thresholds
     # (Set the distance matrix to 0 for all distances greater than the cutoff distance)
     # This simulates training dataset filtering based on these thresholds
-    if args.TM_threshold is not None and args.Tanimoto_threshold is not None:
-        print(f"Filtering distance matrix based on TM-score threshold {args.TM_threshold} and Tanimoto threshold {args.Tanimoto_threshold}")
-        cutoff_distance = args.Tanimoto_threshold + args.TM_threshold
-        distance_matrix[distance_matrix > cutoff_distance] = 0
-    else:
-        print("No TM or Tanimoto thresholds provided, using full and unfiltered distance matrix")
-
+    #if args.TM_threshold is not None and args.Tanimoto_threshold is not None:
+        #print(f"Filtering distance matrix based on TM-score threshold {args.TM_threshold} and Tanimoto threshold {args.Tanimoto_threshold}")
+    #    cutoff_distance = args.Tanimoto_threshold + args.TM_threshold
+    #    distance_matrix[distance_matrix > cutoff_distance] = 0
+    #else:
+        #print("No TM or Tanimoto thresholds provided, using full and unfiltered distance matrix")
+    tm = args.matrix.split('_')[2]
+    tan = args.matrix.split('_')[3]
+    rmsd = args.matrix.split('_')[4].split('.')[0]
+    cutoff_distance = float(tan) + float(tm)
+    distance_matrix[distance_matrix > cutoff_distance] = 0
     # Compute the predictions
     true_labels, predicted_labels, r, rmse = compute_lookup_predictions(distance_matrix, complexes, affinity_data, test_or_not, args.top_n)
+
 
     fig = plot_predictions(true_labels, 
                      predicted_labels, 
                      f"CASF2016 predictions\nWeighted average of labels of top {args.top_n} similar training complexes\nR = {r:.3f}, RMSE = {rmse:.3f}",
                      f"CASF2016 Predictions")
     
-    save_path = f'CASF2016_predictions_top_{args.top_n}_{args.TM_threshold}_{args.Tanimoto_threshold}.png'
+    #save_path = f'CASF2016_predictions_top_{args.top_n}_{args.TM_threshold}_{args.Tanimoto_threshold}.png'
+    save_path = f'casf2016_pred_top{args.top_n}_tm{tm}_tan{tan}_rmsd{rmsd}.png'
+    print(f"{tm}\t{tan}\t{rmsd}\tR={r:.3f}\tRMSE={rmse:.3f}")
     fig.savefig(save_path, dpi=300)
-    print(f"Saved scatterplot to {save_path}")
+    #print(f"Saved scatterplot to {save_path}")
 
 
 if __name__ == "__main__":

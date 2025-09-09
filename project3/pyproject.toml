@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fhw_p3"
+version = "0.1.0"
+description = "Project 3 for Functional Homology Workshop analysis scripts"
+authors = [
+    { name = "David Graber"},
+    { name = "Peter Stockinger"},
+    { name = "Aisha Shah"},
+    { name = "Fredrik Trulsson"},
+    { name = "Ward Deboutte" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    'pandas',
+    'numpy',
+    'networkx',
+    'matplotlib',
+    'seaborn',
+    'scipy',
+    'click',
+    'requests',
+    'toml',
+    'joblib'
+]
+[project.scripts]
+fhw_p3 = "fhw_p3.main:main"
