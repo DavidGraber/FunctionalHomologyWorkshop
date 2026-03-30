@@ -50,7 +50,7 @@ cd project3
 
 ### 2. Download Data
 ```bash
-wget https://g-eac64e.765b9d.09d9.data.globus.org/project3_data.tar.gz
+wget https://g-fbd67d.765b9d.09d9.data.globus.org/project3_data.tar.gz 
 ```
 
 ### 3. Extract Data
