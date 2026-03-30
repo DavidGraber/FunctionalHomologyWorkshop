@@ -15,7 +15,7 @@ def parse_args():
     
     # File paths (No change needed)
     parser.add_argument('--matrix', type=str, default='distance_matrix.npy', help='Path to the distance matrix')
-    parser.add_argument('--complexes', type=str, default='pairwise_similarity_complexes.json', help='Path to the list of complexes')
+    parser.add_argument('--complexes', type=str, default='project3_data/pairwise_similarity_complexes.json', help='Path to the list of complexes')
     parser.add_argument('--affinity_data', type=str, default='affinities.npy', help='Path to the affinity data')
     parser.add_argument('--data_split', type=str, default='test_train_mask.npy', help='Path to the data split')
 
