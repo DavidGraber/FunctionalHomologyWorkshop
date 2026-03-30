@@ -1,5 +1,4 @@
 data*/
-*.npy
 *.tar.gz
 project3/*.json
 *.out
@@ -17,4 +16,7 @@ project2/substrate_smiles.csv
 project2/tanimoto_similarity.npz
 
 # Project 3
-
+project3/project3_data/
+adjacency_matrix.npy
+distance_matrix.npy
+create_train_test_mask.py
