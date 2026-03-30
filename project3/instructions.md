@@ -131,16 +131,15 @@ Now we use the **adjacency matrix** from Step 1 to create a network graph visual
 
 Executing the command below will generate a network graph visualization:
 ```bash
-python create_graph.py --clustering adjacency_matrix.npy --mask test_train_mask.npy --labels affinities.npy --ids pairwise_similarity_complexes.json --output_path similarity_graph.png
+python create_graph.py
 ```
 
-### Parameter Explanation
-- **adjacency_matrix** (npy format, required): Path to the `adjacency_matrix` file, which contains the similarity relationships previously identified in Step 1 (Clustering)
-- **mask** (npy format, optional): Path to boolean mask file indicating which nodes should be plotted (along with their neighbors). We will use the `train_test_mask` downloaded in Step 1, which contains 1 for all test complexes and 0 for all training complexes. Like this, only the test complexes with their neighbors will be plotted.
-- **labels** (npy file, optional): Path to a file with numerical labels for color coding nodes (affinities in our case). We will use the `affinities` array downloaded in Step 1, which contains affinity values (pKs) for all complexes. In this way, our complexes in the plot will be color-coded according to their affinity. 
-- **ids** (json file, optional): Path to a file assigning IDs to the columns/rows of the adjacency matrix. We will use the `pairwise_similarity_complexes` json file downloaded in Step 1, because we want the markers in the plot to be labelled with PDB IDs.
-
-- **output_path** (optional, default: similarity_graph.png): Output path for the graph image 
+### Explanation
+This script uses the following data to make a clustering
+- **adjacency_matrix,npy**: Contains the similarity relationships previously identified in Step 1 (Clustering)
+- **test_train_mask,npy**: Boolean mask file indicating which nodes are in the test dataset and should be plotted (along with their neighbors, including training data points). We will use the `train_test_mask`, which contains 1 for all test complexes and 0 for all training complexes. Like this, only the test complexes with their neighbors will be plotted.
+- **affinities.npy**: File with numerical labels for color coding nodes (affinities in our case). We will use the `affinities` array, which contains affinity values (pKs) for all complexes. In this way, our complexes in the plot will be color-coded according to their affinity. 
+- **ID File**: A file assigning IDs to the columns/rows of the adjacency matrix. We will use the `pairwise_similarity_complexes` json file downloaded in Step 1, because we want the markers in the plot to be labelled with PDB IDs.
 
 
 ### Output Files
