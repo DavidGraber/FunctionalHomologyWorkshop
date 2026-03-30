@@ -24,11 +24,16 @@ Example usage:
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Create a network graph from a clustering file.")
-    parser.add_argument('--clustering', '-c', type=str, required=True, help='Path to clustering file, either adjacency matrix (.npy) or mmseqs2-style clustering (.tsv).')
-    parser.add_argument('--mask', '-m', type=str, help='Boolean mask indicating which nodes (and their neighbors) should be plotted (npy file)')
-    parser.add_argument('--ids', '-i', type=str, help='Path to a file assigning ids to the columns/rows of the adjacency matrix (json file).')
-    parser.add_argument('--labels', '-l', type=str, help='Path to a file with numerical labels for color coding (npy file).')
-    parser.add_argument('--output_path', '-o', type=str, default='similarity_graph.png', help='Output path for graph')
+    parser.add_argument('--clustering', '-c', type=str, default="adjacency_matrix.npy", 
+                        help='Path to clustering file, either adjacency matrix (.npy) or mmseqs2-style clustering (.tsv).')
+    parser.add_argument('--mask', '-m', type=str, default="test_train_mask.npy", 
+                        help='Boolean mask indicating which nodes (and their neighbors) should be plotted (npy file)')
+    parser.add_argument('--ids', '-i', type=str, default="project3_data/pairwise_similarity_complexes.json", 
+                        help='Path to a file assigning ids to the columns/rows of the adjacency matrix (json file).')
+    parser.add_argument('--labels', '-l', type=str, default="affinities.npy", 
+                        help='Path to a file with numerical labels for color coding (npy file).')
+    parser.add_argument('--output_path', '-o', type=str, default='similarity_graph.png', 
+                        help='Output path for graph visualization')
     args = parser.parse_args()
     return args
 
